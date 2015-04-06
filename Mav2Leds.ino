@@ -157,5 +157,5 @@ void setup()
 void loop() 
 {  
   read_mavlink();
-  RGBControl();
+  //RGBControl();
 }

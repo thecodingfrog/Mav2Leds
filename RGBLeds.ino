@@ -22,35 +22,39 @@ int REAR[] = {RL[0],RR[0]};*/
 
 void RGBInitialize()
 {
-  for(int i = NUM_LEDS_PER_STRIP - 1; i >= 0 ; i--)
+  for(int i = 0; i < 10 ; i++)
   {
-    for(int x = 0; x < NUM_STRIPS; x++)
-    {
-    // This inner loop will go over each led in the current strip, one at a time
-      leds[x][i] = CRGB::Blue;
-      FastLED.show();
-    }
-    delay(50);
+    colorChase(CRGB::White, 50);
+    colorChaseBack(CRGB::White, 50);
   }
-  for(int i = NUM_LEDS_PER_STRIP - 1; i >= 0 ; i--)
+}
+
+void circle()
+{
+  for(int i = 0; i < 10; i++)
   {
     for(int x = 0; x < NUM_STRIPS; x++)
     {
-    // This inner loop will go over each led in the current strip, one at a time
-      leds[x][i] = CRGB::Purple;
+      if (x > 0)
+      {
+        for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
+        {
+          leds[x - 1][j] = CRGB::Black;
+          FastLED.show();
+        }
+      }
+      for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
+      {
+        leds[x][j] = CRGB::Blue;
+      }
       FastLED.show();
+      delay(100);
     }
-    delay(50);
-  }
-  delay(2000);
-  for(int i = NUM_LEDS_PER_STRIP - 1; i >= 0 ; i--)
-  {
-    for(int x = 0; x < NUM_STRIPS; x++)
+    for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
     {
-      leds[x][i] = CRGB::Black;
+      leds[NUM_STRIPS - 1][j] = CRGB::Black;
       FastLED.show();
     }
-    delay(50);
   }
 }
 
@@ -74,12 +78,10 @@ void RGBControl()
 
     case 1:            // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
-      /*if (m2h_fix_type == 3) 
-        strip.setPixelColor(ioCounter, strip.Color(127, 127, 127));   // white
+      if (m2h_fix_type == 3) 
+        colorChase(CRGB::Green, 50);
       else 
-        strip.setPixelColor(ioCounter, strip.Color(127, 0, 16));      // deep orange
-        strip.setPixelColor(ioCounter-1, strip.Color(0, 0, 0));       // off
-        strip.show();*/
+        colorChase(CRGB::Blue, 50);
     }
     break;    
 
@@ -226,6 +228,63 @@ void RGBControl()
       strip.show();*/
     break;
     }
+}
+
+void colorChase(CRGB c, uint8_t wait)
+{
+  clearstrips();
+  
+  for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)  // turn all pixels off
+  {
+    for(int x = 0; x < NUM_STRIPS; x++)
+    {
+      leds[x][j] = c;
+    }
+    FastLED.show();
+    delay(wait);
+    for(int x = 0; x < NUM_STRIPS; x++)
+    {
+      leds[x][j] = CRGB::Black;
+    }
+  }
+  
+  FastLED.show(); // for last erased pixel
+}
+
+void colorChaseBack(CRGB c, uint8_t wait)
+{
+  clearstrips();
+  
+  for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)  // turn all pixels off
+  {
+    for(int x = 0; x < NUM_STRIPS; x++)
+    {
+      leds[x][j] = c;
+    }
+    FastLED.show();
+    delay(wait);
+    for(int x = 0; x < NUM_STRIPS; x++)
+    {
+      leds[x][j] = CRGB::Black;
+    }
+  }
+  
+  FastLED.show(); // for last erased pixel
+}
+
+void clearstrips()
+{
+  for(int x = 0; x < NUM_STRIPS; x++)  // turn all pixels off
+  {
+    fill_solid(leds[x], NUM_LEDS_PER_STRIP, CRGB::Black);
+  }
+  FastLED.show();
+}
+
+void clearstrip(int idx)
+{
+  fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);
+  FastLED.show();
 }
 
 #endif
