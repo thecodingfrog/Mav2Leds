@@ -38,7 +38,7 @@ void timerEvent()
       counter =0 ;
     }
   #endif
-
+  
   /* Display version on display for 5 sec*/
   if (!displayVersionDone)
   {
@@ -52,6 +52,23 @@ void CheckFlightMode()
 {
   if (displayVersionDone)
   {
+    /*if (m2h_mode == 0) mode_str = "stab"; //Stabilize
+    else if (m2h_mode == 1) mode_str = "acro"; //Acrobatic
+    else if (m2h_mode == 2) mode_str = "alth"; //Alt Hold
+    else if (m2h_mode == 3) mode_str = "auto"; //Auto
+    else if (m2h_mode == 4) mode_str = "guid"; //Guided
+    else if (m2h_mode == 5) mode_str = "loit"; //Loiter
+    else if (m2h_mode == 6) mode_str = "rtl "; //Return to Launch
+    else if (m2h_mode == 7) mode_str = "circ"; //Circle
+    //else if (m2h_mode == 8) mode_str = "posi"; //Position Hold (Old)
+    else if (m2h_mode == 9) mode_str = "land"; //Land
+    else if (m2h_mode == 10) mode_str = "oflo"; //OF_Loiter
+    else if (m2h_mode == 11) mode_str = "drif"; //Drift
+    else if (m2h_mode == 13) mode_str = "sprt"; //Sport
+    //else if (m2h_mode == 14) mode_str = "flip"; //Flip
+    //else if (m2h_mode == 15) mode_str = "tune"; //Tune
+    else if (m2h_mode == 16) mode_str = "phld"; //Position Hold (Earlier called Hybrid)*/
+    
     if(m2h_mode == 0)          flMode = 0;    // disarmed - no data
     if(m2h_mode == DISARMED)   flMode = 1;    // disarmed
     if(m2h_mode == ARMED)      flMode = 2;    // Manual + stab
@@ -63,7 +80,7 @@ void CheckFlightMode()
     if((m2h_mode == MISION_MODE) && ((m2h_nav_mode == WAYPOINT) || (m2h_nav_mode == TAKEOFF))) flMode = 5;    // Mission mode, waypoint or takeoff
     if((m2h_mode == MISION_MODE) && (m2h_nav_mode == RTH))   flMode = 8;    // Return to Home
     if((m2h_mode == MISION_MODE) && (m2h_nav_mode == ORBIT)) flMode = 9;    // Circle orbit
-    if((m2h_mode == MISION_MODE) && (m2h_nav_mode == LAND))  flMode = 10;   // Land  
+    if((m2h_mode == MISION_MODE) && (m2h_nav_mode == LAND))  flMode = 10;   // Land
   }
 }
 

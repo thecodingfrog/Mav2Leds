@@ -4,6 +4,8 @@
 #define EN  1         // Enable value
 #define DI  0         // Disable value
 
+static unsigned long mavLinkTimer = 0;
+
 #define NUM_STRIPS 3
 #define NUM_LEDS_PER_STRIP 8
 CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];

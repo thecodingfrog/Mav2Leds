@@ -67,9 +67,8 @@
 
 #define MAVLINK10     // Are we listening MAVLink 1.0 or 0.9   (0.9 is obsolete now)
 #define HEARTBEAT     // HeartBeat signal
-//#define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
+#define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
 //#define DEBUGLED 12   // HottLoop debugLed
-#define LPD8806RGB    // Use LPD8806 'íntelligent' digital RGB strip instead of direct attached LEDs
 #define JDIOBOARD     // JDrones IOBoard
 
 /* **********************************************/
@@ -96,14 +95,14 @@
 
 /* *************************************************/
 /* ***************** DEFINITIONS *******************/
-#define TELEMETRY_SPEED  115200    /* MAVLink telemetry speed. Use AutoQuad settings */
+#define TELEMETRY_SPEED  57600    /* MAVLink telemetry speed.*/
 FastSerialPort0(Serial);           /* Our Uart port for Mavlink*/
 
 #define DPL dbSerial.println 
 #define DPN dbSerial.print
 
-static uint8_t hRX=6;              /* software serial port for HoTT OR! Debug */
-static uint8_t hTX=5;              /* if using the JDrones board use 6 & 5 */
+static uint8_t hRX=12;              /* software serial port for HoTT OR! Debug */
+static uint8_t hTX=11;              /* if using the JDrones board use 6 & 5 */
 
 #ifdef SERDB
   SoftwareSerial dbSerial(hRX,hTX);    /* (rx port,tx port) */
@@ -122,17 +121,17 @@ void setup()
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
-
+  
   #ifdef SERDB
-    dbSerial.begin(19200);
+    dbSerial.begin(9600);
     DPL("Debug Serial ready... ");
     DPL("Output only please.  ");
-  #endif 
+  #endif
   
   RGBInitialize();
   
   /* initialize Timer1 for interrupt timer events (timerEvent) */
-    cli();              // disable global interrupts
+  /*  cli();              // disable global interrupts
     TCCR1A = 0;         // set entire TCCR1A register to 0
     TCCR1B = 0;         // same for TCCR1B
     float freq = 0.1;   // every 0.1s or 10hz, same as supervisor loop AutoQuad
@@ -143,19 +142,25 @@ void setup()
     TCCR1B |= (1 << CS10);    // Set CS10 and CS12 bits for 1024 prescaler:
     TCCR1B |= (1 << CS12);
     TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt:
-    sei(); 
+    sei();*/ 
 } /* end */
 /* * * * * * * * * END of setup() * * * * * * * * */
 
 /* **********  interrupt timer call  ***********/
-  ISR(TIMER1_COMPA_vect)      /* Compare timer vector */
-  {
-    timerEvent();             /* run everything that is on a 'critical' timer */
-  }
+  //ISR(TIMER1_COMPA_vect)      /* Compare timer vector */
+  //{
+  //  timerEvent();             /* run everything that is on a 'critical' timer */
+  //}
   
 /* * * * * * * * *  MAIN LOOP * * * * * * * * * * */
-void loop() 
-{  
+void loop()
+{
+  //Run "timer" every 120 miliseconds
+  if(millis() > mavLinkTimer + 120)
+  {
+    mavLinkTimer = millis();
+    timerEvent();
+  }
   read_mavlink();
   //RGBControl();
 }
