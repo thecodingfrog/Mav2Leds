@@ -60,16 +60,20 @@ void circle()
 
 void RGBControl()
 {
-  if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) ){    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
+  if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) )
+  {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
     r=127;
     g=32;
     b=0;
-  }else {
+  }
+  else
+  {
     r=127;
     g=127;
     b=127;
   } 
-  switch (flMode) {
+  switch (flMode)
+  {
     case 0:            // all off
     {
       //clearStrip();
@@ -78,7 +82,7 @@ void RGBControl()
 
     case 1:            // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
-      if (m2h_fix_type == 3) 
+      if (m2h_fix_type == 3)
         colorChaseAll(CRGB::Green, 50);
       else 
         colorChaseAll(CRGB::Blue, 50);
@@ -87,7 +91,10 @@ void RGBControl()
 
     case 2:            // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
     {
-      colorChaseBack(CRGB::Green, 0, 1, 50, 7);
+      if (m2h_fix_type == 3)
+        colorChaseBack(CRGB::Blue, 0, 1, 50, 7);
+      else 
+        colorChaseBack(CRGB::Green, 0, 1, 50, 7);
       colorChase(CRGB::Red, 2, 3, 50, false);
     
     }
@@ -95,7 +102,10 @@ void RGBControl()
 
     case 3:           // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
     {
-      colorChaseBack(CRGB::Green, 0, 1, 50, 7);
+      if (m2h_fix_type == 3)
+        colorChaseBack(CRGB::Blue, 0, 1, 50, 7);
+      else 
+        colorChaseBack(CRGB::Green, 0, 1, 50, 7);
       colorBlink(CRGB::Red, 2, 3, 10, 2);
     /*for (int i=0; i < (strip.numPixels()/2); i++) 
     {
@@ -115,6 +125,11 @@ void RGBControl()
     
     case 4:           // armed & position hold: front leds on, (white) rear leds short flashing (green)
     {
+      if (m2h_fix_type == 3)
+        colorBlink(CRGB::Green, -1, -1, 10, 2, CRGB::Red);
+      else
+        colorBlink(CRGB::Blue, -1, -1, 10, 2, CRGB::Red);
+      
     /*for (int i=0; i < (strip.numPixels()/2); i++) 
     {
       strip.setPixelColor(i, strip.Color(r, b, g));          // front leds color depending on batt status
@@ -287,9 +302,22 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait)
 
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle)
 {
+  colorBlink(c, idx1, idx2, wait, 1, null);
+}
+
+void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2)
+{
   for(int x = 0; x < cycle; x++)
   {
-    colorArm(c, idx1, idx2);
+    if (c2 == null)
+    {
+      colorArm(c, idx1, idx2);
+    }
+    else
+    {
+      colorArm(c, 0, 1); // FRONT
+      colorArm(c2, 2, 3); // REAR
+    }
     FastLED.show();
     delay(wait);
     colorArm(CRGB::Black, idx1, idx2);
