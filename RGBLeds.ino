@@ -302,14 +302,14 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait)
 
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle)
 {
-  colorBlink(c, idx1, idx2, wait, 1, null);
+  colorBlink(c, idx1, idx2, wait, 1, NULL);
 }
 
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2)
 {
   for(int x = 0; x < cycle; x++)
   {
-    if (c2 == null)
+    if (c2 = NULL)
     {
       colorArm(c, idx1, idx2);
     }
