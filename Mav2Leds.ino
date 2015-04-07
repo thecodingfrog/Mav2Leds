@@ -82,7 +82,7 @@
 #include <GCS_MAVLink.h>
 #include <SoftwareSerial.h>
 #include <digitalWriteFast.h>    /* Direct portmanipulation library to replace digitalWrite. This is faster and smaller in code */
-#include "FastLED.h"
+#include <FastLED.h>
 #include "Mav2Leds.h"            /* Configurations */
 
 
