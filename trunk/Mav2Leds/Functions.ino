@@ -52,7 +52,7 @@ void CheckFlightMode()
 {
   if (displayVersionDone)
   {
-    /*if (m2h_mode == 0) mode_str = "stab"; //Stabilize
+    if (m2h_mode == 0) mode_str = "stab"; //Stabilize
     else if (m2h_mode == 1) mode_str = "acro"; //Acrobatic
     else if (m2h_mode == 2) mode_str = "alth"; //Alt Hold
     else if (m2h_mode == 3) mode_str = "auto"; //Auto
@@ -67,7 +67,7 @@ void CheckFlightMode()
     else if (m2h_mode == 13) mode_str = "sprt"; //Sport
     //else if (m2h_mode == 14) mode_str = "flip"; //Flip
     //else if (m2h_mode == 15) mode_str = "tune"; //Tune
-    else if (m2h_mode == 16) mode_str = "phld"; //Position Hold (Earlier called Hybrid)*/
+    else if (m2h_mode == 16) mode_str = "phld"; //Position Hold (Earlier called Hybrid)
     
     if(m2h_mode == 0)          flMode = 0;    // disarmed - no data
     if(m2h_mode == DISARMED)   flMode = 1;    // disarmed

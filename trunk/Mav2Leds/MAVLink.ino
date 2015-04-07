@@ -71,7 +71,7 @@ void read_mavlink(){
             m2h_mode = mavlink_msg_heartbeat_get_base_mode(&msg);
             m2h_nav_mode = mavlink_msg_heartbeat_get_custom_mode(&msg);
             m2h_sysstat = mavlink_msg_heartbeat_get_system_status(&msg);
-
+            
             CheckFlightMode();
             if (m2h_mode == DISARMED) isArmed=0;
             if ((m2h_mode >= ARMED) || (m2h_sysstat != 3)) isArmed=1;            
@@ -79,21 +79,30 @@ void read_mavlink(){
 #ifdef SERDB            
               dbSerial.print("MAV: ");
               dbSerial.print((mavlink_msg_heartbeat_get_base_mode(&msg),DEC));
-              dbSerial.print("  Modes: ");
+              dbSerial.println();
+              dbSerial.print("Mode: ");
               dbSerial.print(m2h_mode);
-              dbSerial.print("  SysStat: ");
-              dbSerial.print(m2h_sysstat);
-              dbSerial.print("  FIX: ");
-              dbSerial.print(m2h_fix_type);
-              dbSerial.print("  Sats: ");
-              dbSerial.print(m2h_satellites_visible);
-              dbSerial.print("  flMode: ");
+              dbSerial.println();
+              dbSerial.print("flMode: ");
               dbSerial.print(flMode);
-              dbSerial.print("  BatVolt: ");
-              dbSerial.print(m2h_vbat_A/1E1);
-              dbSerial.print("  Nav mode: ");
+              dbSerial.println();
+              dbSerial.print("Nav mode: ");
               dbSerial.print(m2h_nav_mode);
-
+              dbSerial.println();
+              dbSerial.print("Flight mode: ");
+              dbSerial.print(mode_str);
+              dbSerial.println();
+              dbSerial.print("SysStat: ");
+              dbSerial.print(m2h_sysstat);
+              dbSerial.println();
+              dbSerial.print("FIX: ");
+              dbSerial.print(m2h_fix_type);
+              dbSerial.println();
+              dbSerial.print("Sats: ");
+              dbSerial.print(m2h_satellites_visible);
+              dbSerial.println();
+              dbSerial.print("BatVolt: ");
+              dbSerial.print(m2h_vbat_A/1E1);
               dbSerial.println();
 
               dbSerial.print("Latitude: ");

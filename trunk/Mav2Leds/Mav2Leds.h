@@ -159,3 +159,12 @@ byte isArmed = 0;
 byte isArmedOld = 0;
 byte isActive;
 
+String mode_str;
+
+struct Preserved
+{
+  byte none;
+  byte internal;
+  byte external;
+};
+
