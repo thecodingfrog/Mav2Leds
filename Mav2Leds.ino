@@ -101,7 +101,7 @@ FastSerialPort0(Serial);           /* Our Uart port for Mavlink*/
 #define DPL dbSerial.println 
 #define DPN dbSerial.print
 
-static uint8_t hRX=12;              /* software serial port for HoTT OR! Debug */
+static uint8_t hRX=10;              /* software serial port for HoTT OR! Debug */
 static uint8_t hTX=11;              /* if using the JDrones board use 6 & 5 */
 
 #ifdef SERDB
@@ -161,6 +161,7 @@ void loop()
     mavLinkTimer = millis();
     timerEvent();
   }
+  //DPL("loop");
   read_mavlink();
   //RGBControl();
 }
