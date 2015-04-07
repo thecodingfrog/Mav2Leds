@@ -8,9 +8,8 @@ BetterStream	*mavlink_comm_1_port;
 
 mavlink_system_t mavlink_system = {12,1,0,0};
 
-#include "Mavlink_compat.h"
-#include "include/mavlink/v1.0/mavlink_types.h"
-#include "include/mavlink/v1.0/common/mavlink.h" 
+#include "../GCS_MAVLink/include/mavlink/v1.0/mavlink_types.h"
+#include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/mavlink.h" 
 
 static int packet_drops = 0;
 static int parse_error = 0;
