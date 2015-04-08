@@ -70,6 +70,7 @@ void read_mavlink(){
 
             m2h_mode = mavlink_msg_heartbeat_get_base_mode(&msg);
             m2h_nav_mode = mavlink_msg_heartbeat_get_custom_mode(&msg);
+            flight_mode = (uint8_t)mavlink_msg_heartbeat_get_custom_mode(&msg);
             m2h_sysstat = mavlink_msg_heartbeat_get_system_status(&msg);
             
             CheckFlightMode();

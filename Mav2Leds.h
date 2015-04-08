@@ -88,6 +88,7 @@ static uint8_t  m2h_alarmTemp1;
 
 static uint16_t m2h_mode = 0;                   // Status mode (manual,stabilized etc)
 static uint8_t  m2h_nav_mode = 0;               // Navigation mode
+static uint8_t  flight_mode = 0;
 static uint16_t m2h_old_mode = 0;
 static uint8_t  m2h_sysstat = 0;                // system status (active,standby,critical)
 static uint8_t  m2h_sysstat_old = 0; 
