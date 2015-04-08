@@ -73,8 +73,22 @@ void read_mavlink(){
             m2h_sysstat = mavlink_msg_heartbeat_get_system_status(&msg);
             
             CheckFlightMode();
-            if (m2h_mode == DISARMED) isArmed=0;
-            if ((m2h_mode >= ARMED) || (m2h_sysstat != 3)) isArmed=1;            
+            //if (m2h_mode == DISARMED) isArmed=0;
+            //if ((m2h_mode >= ARMED) || (m2h_sysstat != 3)) isArmed=1;
+            if(isBit(mavlink_msg_heartbeat_get_base_mode(&msg),MOTORS_ARMED))
+            {
+              if(isArmedOld == 0)
+              {
+                  CheckFlightMode();
+                  isArmedOld = 1;
+              }    
+              isArmed = 1;  
+            }
+            else
+            {
+              isArmed = 0;
+              isArmedOld = 0;
+            }           
 
 #ifdef SERDB            
               dbSerial.print("MAV: ");

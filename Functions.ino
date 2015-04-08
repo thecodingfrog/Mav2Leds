@@ -40,18 +40,18 @@ void timerEvent()
   #endif
   
   /* Display version on display for 5 sec*/
-  if (!displayVersionDone)
+  /*if (!displayVersionDone)
   {
     flMode = 13;
     if (millis() - p_cMillis >5000) displayVersionDone = 1;
-  }
+  }*/
   /* end timer event */
 }
 
 void CheckFlightMode()
 {
-  if (displayVersionDone)
-  {
+  //if (displayVersionDone)
+  //{
     if (m2h_mode == 0) mode_str = "stab"; //Stabilize
     else if (m2h_mode == 1) mode_str = "acro"; //Acrobatic
     else if (m2h_mode == 2) mode_str = "alth"; //Alt Hold
@@ -81,7 +81,7 @@ void CheckFlightMode()
     if((m2h_mode == MISION_MODE) && (m2h_nav_mode == RTH))   flMode = 8;    // Return to Home
     if((m2h_mode == MISION_MODE) && (m2h_nav_mode == ORBIT)) flMode = 9;    // Circle orbit
     if((m2h_mode == MISION_MODE) && (m2h_nav_mode == LAND))  flMode = 10;   // Land
-  }
+  //}
 }
 
 // Checking if BIT is active in PARAM, return true if it is, false if not

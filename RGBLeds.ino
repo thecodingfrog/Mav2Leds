@@ -77,24 +77,15 @@ void RGBControl()
   
   //flMode = 4;
   
-  switch (flMode)
-  {
-    case 0:            // all off
-    {
-      //clearStrip();
-    }
-    break;    
-
-    case 1:            // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
+  
+    if (isArmed == 0)            // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
       if (m2h_fix_type == 3)
-        colorChaseAll(CRGB::Green, 50);
+        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       else 
-        colorChaseAll(CRGB::Blue, 50);
+        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
     }
-    break;    
-
-    case 2:            // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
+    else if (mode_str == "stab" && isArmed == 1)            // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
     {
       if (m2h_fix_type == 3)
       {
@@ -107,9 +98,7 @@ void RGBControl()
       colorChase(CRGB::Red, 2, 3, 50, false);
     
     }
-    break;    
-
-    case 3:           // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
+    else if (mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
     {
       if (m2h_fix_type == 3)
       {
@@ -120,130 +109,39 @@ void RGBControl()
         colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
       }
       colorBlink(CRGB::Red, 2, 3, 50, 3, preserved_leds.external);
-    /*for (int i=0; i < (strip.numPixels()/2); i++) 
-    {
-      strip.setPixelColor(i, strip.Color(r, b, g));  // front leds color depending on batt status
-
-      if (ioCounter == 3 || ioCounter ==4){
-       strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(127, 0, 32));   // orange
-       strip.setPixelColor(0, 0);                            // first front led off
-      }else{
-       strip.setPixelColor(i+(strip.numPixels()/2), 0);      // rear off
-       strip.setPixelColor(0, strip.Color(127, 0, 32));      // first front led orange       
-      }
     }
-    strip.show();*/
-    }
-    break;
-    
-    case 4:           // armed & position hold: front leds on, (white) rear leds short flashing (green)
+    else if (mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
     {
       if (m2h_fix_type == 3)
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
       else
         colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
-      
-    /*for (int i=0; i < (strip.numPixels()/2); i++) 
+    }
+    else if (mode_str == "loit") // LOITER
     {
-      strip.setPixelColor(i, strip.Color(r, b, g));          // front leds color depending on batt status
-      if (ioCounter <= 3)
-       strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(0, 0, 127));   // green
-      else
-       strip.setPixelColor(i+(strip.numPixels()/2), 0);      // rear off
+      colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.internal);
     }
-    strip.show();*/
-    }
-    break;     
-    
-    case 5:         // armed & mission mode: front and rear leds alternating slow flashing
+    else if (mode_str == "land") // LAND
     {
-
-      /*for (int i=0; i < (strip.numPixels()/2); i++) 
+      colorChaseBack(CRGB::Green, -1, -1, 50);
+    }
+    else if (mode_str == "rtl") // RTL
     {
-      if (ioCounter >= 5){
-       strip.setPixelColor(i, 0);                            // front leds off
-       strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(0, 0, 127));   // green
-      }else{
-       strip.setPixelColor(i, strip.Color(r, b, g));         // front leds color depending on batt status
-       strip.setPixelColor(i+(strip.numPixels()/2), 0);      // rear off
-      }
+      colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.internal);
     }
-    strip.show();*/
-    
-    }
-    break;    
-
-    case 6:         // armed & DHV mode: front leds on, (white) rear leds fast flashing (green/cyan)
-    {
-    /* pattern like this
-    * 0 1 2 3 4 5 6 7 8 9 10
-    * G - C - G - C - G - C
-    */
-    /*for (int i=0; i < (strip.numPixels()/2); i++) 
-    {
-      strip.setPixelColor(i, strip.Color(r, b, g));                             // front leds color depending on batt status
-      if (ioCounter == 0 || ioCounter == 4 || ioCounter ==8)
-        strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(0, 0, 127));   // rear green
-      else if (ioCounter == 1 || ioCounter ==3 || ioCounter ==5 || ioCounter ==7)  
-       strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(0, 0, 0));   
-      else
-       strip.setPixelColor(i+(strip.numPixels()/2), strip.Color(0, 127, 127));  // rear cyan
-    }
-    strip.show();*/
-    }
-    break;    
-
-    case 7:       // TBD (CareFree)
-    {
-    }
-    break; 
-
-    case 8:       // mission: Return to home 'blob' chasing
-    {
-      /*strip.setPixelColor(ioCounter-2, strip.Color(0, 0, 0));    // green
-      strip.setPixelColor(ioCounter-1, strip.Color(8, 0, 16));   // green
-      strip.setPixelColor(ioCounter, strip.Color(0, 0, 127));    // green
-      strip.setPixelColor(ioCounter+1, strip.Color(8, 0, 16));   // green      
-      strip.show();*/
-    }
-    break; 
-
-    case 9:       // mission: circle
-    {
-    /*strip.setPixelColor(stripCounter, strip.Color(127, 127, 127));   // white
-    strip.setPixelColor(stripCounter+4, strip.Color(127, 127, 127)); // white
-    strip.setPixelColor(stripCounter-1, strip.Color(0, 0, 0));       // off
-    strip.setPixelColor(stripCounter+4-1, strip.Color(0, 0, 0));     // off
-    strip.show();
-
-    stripCounter ++;
-    if (stripCounter >3) stripCounter =0;*/
-    }
-    break; 
-
-    case 10:       // mission: land
-    {
-    //colorWipe (strip.Color(127,127,127), 10);   // Landing lights : white
-    }
-    break; 
-    
-    case 11:      // lost signal: red / blue alternating
+   
+    /*case 11:      // lost signal: red / blue alternating
     {
       colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
     }
-    break;    
-
-    case 12:      // TDB
-    {
-    }
-    break;   
+    break;*/ 
   
-    default:        // no valid signal, 1 red led
+    else // no valid signal, 1 red led
+    {
       colorBlink(CRGB::White, -1, -1, 50, 3, CRGB::White, preserved_leds.none);
       
       //colorChaseBackAll(CRGB::Red, 50);
-    break;
-    }
+    }    
 }
 
 void colorArmAll(CRGB c)

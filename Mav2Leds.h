@@ -43,7 +43,9 @@ int Out[] = {8,9,10,4,3,2};  /* Output I/O pin array */
 //#define MANUAL_MODE ARMED                  /* mavlinkData.mode | MAV_MODE_FLAG_SAFETY_ARMED */
 //#define MISION_MODE ARMED + STABILIZED + 4 /* mavlinkData.mode | MAV_MODE_FLAG_STABILIZE_ENABLED | MAV_MODE_FLAG_AUTO_ENABLED */
 //#define DVH_MODE ARMED + STABILIZED + 8    /* mavlinkData.mode | MAV_MODE_FLAG_STABILIZE_ENABLED | MAV_MODE_FLAG_GUIDED_ENABLED */
-//#define CARE_FREE 251           
+//#define CARE_FREE 251
+
+#define MOTORS_ARMED 128
 
 #define DISARMED     MAV_MODE_MANUAL_DISARMED
 #define ARMED        MAV_MODE_MANUAL_ARMED
