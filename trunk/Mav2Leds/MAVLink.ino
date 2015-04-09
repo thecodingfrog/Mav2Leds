@@ -3,10 +3,10 @@
 
 // this code was moved from libraries/GCS_MAVLink to allow compile
 // time selection of MAVLink 1.0
-BetterStream	*mavlink_comm_0_port;
-BetterStream	*mavlink_comm_1_port;
+//BetterStream	*mavlink_comm_0_port;
+//BetterStream	*mavlink_comm_1_port;
 
-mavlink_system_t mavlink_system = {12,1,0,0};
+//mavlink_system_t mavlink_system = {12,1,0,0};
 
 #include "../GCS_MAVLink/include/mavlink/v1.0/mavlink_types.h"
 #include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/mavlink.h" 
@@ -113,41 +113,9 @@ void read_mavlink(){
               dbSerial.print("FIX: ");
               dbSerial.print(m2h_fix_type);
               dbSerial.println();
-              dbSerial.print("Sats: ");
-              dbSerial.print(m2h_satellites_visible);
-              dbSerial.println();
               dbSerial.print("BatVolt: ");
               dbSerial.print(m2h_vbat_A/1E1);
               dbSerial.println();
-
-              dbSerial.print("Latitude: ");
-              dbSerial.print(double(m2h_gps_lat/1E7) );
-              dbSerial.print("  Longitude: ");
-              dbSerial.print(double(m2h_gps_lon/1E7) );
-              dbSerial.print("  Altitude: ");
-              dbSerial.print(m2h_gps_alt/1E3);
-
-              dbSerial.print("  Roll: ");
-              dbSerial.print(m2h_roll);
-              dbSerial.print("  Pitch: ");
-              dbSerial.print(m2h_pitch);
-              dbSerial.print("  Heading: ");
-              dbSerial.print( ((uint16_t)(m2h_yaw*100)/100) );
-              
-
-              dbSerial.print("  Temp: ");
-              dbSerial.print(m2h_temp/1E2);
-              
-              dbSerial.println();
-
-              dbSerial.print("Home Latitude: ");
-              dbSerial.print(m2h_gps_lat_home/1E7);
-              dbSerial.print("  Home Longitude: ");
-              dbSerial.print(m2h_gps_lon_home/1E7);
-              dbSerial.print("  Ceiling: ");
-              dbSerial.print(m2h_ceiling/1E3);
-              dbSerial.print("  Distance home: ");
-              dbSerial.print(home_distance_calc);
               dbSerial.print("  Armed: ");
               dbSerial.print(isArmed);
                               
@@ -158,7 +126,6 @@ void read_mavlink(){
           
           case MAVLINK_MSG_ID_SYS_STATUS:
           { 
-            // AQ sends   (0,0,0,idle %, batt, batt remaining, drops, 0,0,0,0) 
             m2h_vbat_A = (mavlink_msg_sys_status_get_voltage_battery(&msg) / 100.0f);    // It will arive in mV, but Hott uses V * 100
             //m2h_battery_remaining_A = mavlink_msg_sys_status_get_battery_remaining(&msg);    // not used in HoTT 
           }
@@ -176,39 +143,7 @@ void read_mavlink(){
  */
         case MAVLINK_MSG_ID_GPS_RAW_INT:    // is send by AutoQad
           {      
-            m2h_fix_type = mavlink_msg_gps_raw_int_get_fix_type(&msg);
-            m2h_gps_lon = mavlink_msg_gps_raw_int_get_lon(&msg);    // latitude
-            m2h_gps_lat = mavlink_msg_gps_raw_int_get_lat(&msg);    // longitude
-            m2h_gps_alt = mavlink_msg_gps_raw_int_get_alt(&msg);    // gps altitude
-            m2h_gps_vel = mavlink_msg_gps_raw_int_get_vel(&msg);    // speed in m/s
-            m2h_gps_cog = mavlink_msg_gps_raw_int_get_cog(&msg);    // direction of movement
-            m2h_satellites_visible = mavlink_msg_gps_raw_int_get_satellites_visible(&msg);            
-          }
-          break;
-
-        case MAVLINK_MSG_ID_ATTITUDE:
-          {
-            m2h_pitch = ToDeg(mavlink_msg_attitude_get_pitch(&msg));
-            m2h_roll = ToDeg(mavlink_msg_attitude_get_roll(&msg));
-            m2h_yaw = ToDeg(mavlink_msg_attitude_get_yaw(&msg));
-          }
-          break;
-/**
- * @brief Pack a scaled_pressure message on a channel
- * @param system_id ID of this system
- * @param component_id ID of this component (e.g. 200 for IMU)
- * @param chan The MAVLink channel this message was sent over
- * @param msg The MAVLink message to compress the data into
- * @param time_boot_ms Timestamp (microseconds since UNIX epoch or microseconds since system boot)  -- AutoQuad
- * @param press_abs Absolute pressure (hectopascal)                             -- AutoQuad AQ_PRESSURE*0.01f
- * @param press_diff Differential pressure 1 (hectopascal)                      -- AutoQuad 0.0f
- * @param temperature Temperature measurement (0.01 degrees celsius)            -- AutoQuad
- * @return length of the message in bytes (excluding serial stream start sign)
- */          
-        case MAVLINK_MSG_ID_SCALED_PRESSURE:
-        {
-           m2h_abs = mavlink_msg_scaled_pressure_get_press_abs(&msg);       // absolute presure          
-           m2h_temp = mavlink_msg_scaled_pressure_get_temperature(&msg);    // internal pressure sensor temp
+            m2h_fix_type = mavlink_msg_gps_raw_int_get_fix_type(&msg);            
           }
           break;
 /**
@@ -219,31 +154,6 @@ void read_mavlink(){
            throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
         }
         break;
-        
-/**
-* @param target_system System ID
- * @param latitude global position * 1E7
- * @param longitude global position * 1E7
- * @param altitude global position * 1000
- */
-        case MAVLINK_MSG_ID_GLOBAL_POSITION_SETPOINT_INT:
-          {
-           m2h_gps_lat_home = mavlink_msg_set_global_position_setpoint_int_get_latitude(&msg);
-           m2h_gps_lon_home = mavlink_msg_set_global_position_setpoint_int_get_longitude(&msg);
-           m2h_ceiling = mavlink_msg_set_global_position_setpoint_int_get_altitude(&msg);
-           if ( (m2h_gps_lat_home !=0) &&  (m2h_gps_lon_home !=0)) m2h_got_home = 1;
-          }
-          break;
-
-          /* I know, totaly misused this message with other variables but the Android app doesn't take any other 'alien' message */
-        case MAVLINK_MSG_ID_VFR_HUD:
-          { 
-           m2h_gps_lat_home = mavlink_msg_vfr_hud_get_airspeed(&msg);
-           m2h_gps_lon_home = mavlink_msg_vfr_hud_get_groundspeed(&msg);
-           m2h_ceiling = mavlink_msg_vfr_hud_get_alt(&msg);
-           if ( (m2h_gps_lat_home !=0) &&  (m2h_gps_lon_home !=0)) m2h_got_home = 1;
-          }
-          break;
           
         case MAVLINK_MSG_ID_STATUSTEXT:
           {   
@@ -263,6 +173,5 @@ void read_mavlink(){
   }
   // Update global packet drops counter
   packet_drops += status.packet_rx_drop_count;
-  parse_error += status.parse_error;
-  
+  parse_error += status.parse_error;  
 }

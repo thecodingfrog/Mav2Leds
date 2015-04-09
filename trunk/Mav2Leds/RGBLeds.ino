@@ -144,6 +144,9 @@ void RGBControl()
     }    
 }
 
+/**
+* Color single all strips
+*/
 void colorArmAll(CRGB c)
 {
   clearstrips();
@@ -151,6 +154,9 @@ void colorArmAll(CRGB c)
   colorArm(c, -1, -1);
 }
 
+/**
+* Color single strip
+*/
 void colorArm(CRGB c, int idx1, int idx2)
 {
   for(int x = 0; x < NUM_STRIPS; x++)
@@ -160,6 +166,9 @@ void colorArm(CRGB c, int idx1, int idx2)
   FastLED.show();
 }
 
+/**
+* Color single strip
+*/
 void colorArm(CRGB c, int idx1, int idx2, byte preserved)
 {
   for(int x = 0; x < NUM_STRIPS; x++)
@@ -186,6 +195,9 @@ void colorArm(CRGB c, int idx1, int idx2, byte preserved)
   FastLED.show();
 }
 
+/**
+* Color chase forward all strips
+*/
 void colorChaseAll(CRGB c, uint8_t wait)
 {
   clearstrips();
@@ -193,11 +205,17 @@ void colorChaseAll(CRGB c, uint8_t wait)
   colorChase(c, -1, -1, wait);
 }
 
+/**
+* Color chase forward
+*/
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait)
 {
   colorChase(c, idx1, idx2, wait, true);
 }
 
+/**
+* Color chase forward
+*/
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle)
 {
   for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)  // turn all pixels off
@@ -220,21 +238,33 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle)
   FastLED.show(); // for last erased pixel
 }
 
+/**
+* Color blink
+*/
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait)
 {
   colorBlink(c, idx1, idx2, wait, 1);
 }
 
+/**
+* Color blink
+*/
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle)
 {
   colorBlink(c, idx1, idx2, wait, cycle, CRGB::Black, preserved_leds.none);
 }
 
+/**
+* Color blink
+*/
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, byte preserved)
 {
   colorBlink(c, idx1, idx2, wait, cycle, CRGB::Black, preserved);
 }
 
+/**
+* Color blink
+*/
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2, byte preserved)
 {
   for(int x = 0; x < cycle; x++)
@@ -263,6 +293,9 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2, by
     }
 }
 
+/**
+* Color chase backward
+*/
 void colorChaseBackAll(CRGB c, uint8_t wait)
 {
   clearstrips();
@@ -270,11 +303,17 @@ void colorChaseBackAll(CRGB c, uint8_t wait)
   colorChaseBack(c, -1, -1, wait, preserved_leds.none);
 }
 
+/**
+* Color chase backward
+*/
 void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait)
 {  
   colorChaseBack(c, idx1, idx2, wait, preserved_leds.none);
 }
 
+/**
+* Color chase backward
+*/
 void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 {
   for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)  // turn all pixels off
@@ -308,6 +347,9 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
   FastLED.show(); // for last erased pixel
 }
 
+/**
+* Clear all strips
+*/
 void clearstrips()
 {
   for(int x = 0; x < NUM_STRIPS; x++)  // turn all pixels off
@@ -317,6 +359,11 @@ void clearstrips()
   FastLED.show();
 }
 
+
+/**
+* Clear single strip
+* @param idx Strip index to be wiped
+*/
 void clearstrip(int idx)
 {
   fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);

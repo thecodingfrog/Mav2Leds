@@ -19,11 +19,6 @@ CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 /* direct port manupulation instead of digitalwrite. faster and smaller in code */
 int Out[] = {8,9,10,4,3,2};  /* Output I/O pin array */
 
-#define M_PI			3.14159265f
-#define DEG_TO_RAD		(M_PI / 180.0f)
-#define RAD_TO_DEG		(180.0f/ M_PI)
-#define NAV_EQUATORIAL_RADIUS	(6378.137 * 1000.0)
-
 #define LOW_BATT   3.35      /* low battery per cell for HoTT display */
 #define LOW_BATT_2 3.2       /* low battery per cell for LED warning */
 #define throttleMin 1100     /* Throttle min position for flighttimer */
@@ -69,84 +64,26 @@ int Out[] = {8,9,10,4,3,2};  /* Output I/O pin array */
 
 /* Global variables */
 byte  r, g, b, r2, g2, b2;
-static uint32_t p_cMillis = 0;
-static int counter = 0;      /* General counter */
-static int stripCounter =0;
 byte ioCounter = 0;          /* Loop counter */
 byte variocounter3s = 0;     /* vario m/3s counter */
 byte variocounter10s = 0;    /* vario m/10s counter */
 
 /* AutoQuad received values */
 static float    m2h_vbat_A = 0;                 // Battery A voltage in milivolt
-static uint16_t m2h_battery_remaining_A = 0;    // 0 to 100 <=> 0 to 1000 calculated by the UAV (AutoQuad)
 static boolean  m2h_vbat_set = 0;               // first arrival correct voltage
 static uint8_t  m2h_num_cells = 0;              // number of cells
 static uint8_t  m2h_fuel_procent = 0;
-static uint8_t  version;
-static uint8_t  m2h_alarmDriveVoltage;
-static uint8_t  m2h_alarmTemp1;
 
 static uint16_t m2h_mode = 0;                   // Status mode (manual,stabilized etc)
 static uint8_t  m2h_nav_mode = 0;               // Navigation mode
 static uint8_t  flight_mode = 0;
-static uint16_t m2h_old_mode = 0;
 static uint8_t  m2h_sysstat = 0;                // system status (active,standby,critical)
-static uint8_t  m2h_sysstat_old = 0; 
 
-static uint8_t  m2h_satellites_visible = 0;     // number of satelites
 static uint8_t  m2h_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
-static int32_t  m2h_gps_lon = 0;
-static int32_t  m2h_gps_lat = 0;
-static int32_t  m2h_gps_alt = 0;
-static uint16_t m2h_gps_vel = 0;
-static uint16_t m2h_gps_cog = 0;
-static uint32_t m2h_gps_lon_home = 0;          // home position longitude
-static uint32_t m2h_gps_lat_home = 0;          // home position latitude
-static uint16_t m2h_gps_alt_home = 0;          // home position altitude
-static uint8_t  pos_NS;
-static uint8_t  pos_EW;
-static uint8_t  NSEW;  
-static uint16_t pos_NS_dm;
-static uint16_t pos_NS_sec;
-static uint16_t pos_EW_dm;
-static uint16_t pos_EW_sec;
-static int      degMin;
-static int      sec;
-static float    home_distance_calc = 0;        // distance to home //
-static float    bearing;
-//static boolean m2h_got_home = 0;               // tels if home position is set
-static int8_t m2h_got_home = 0;              // tels if home position is set
-
-static uint16_t m2h_ceiling = 0;               // altitude ceiling from AQ = Max Altitude in HoTT
-static uint16_t alt_diff_1s = 0;
-static uint16_t alt_diff_3s = 0;
-static uint16_t alt_diff_10s = 0;
-static uint16_t alt_start_1s = 0;
-static uint16_t alt_start_3s = 0;
-static uint16_t alt_start_10s = 0;
-static uint16_t height = 0;
-static uint16_t height_max = 0;
-static uint16_t msl_height = 0;
 
 static uint16_t throttle = 0;                  // throttle value
 
 static uint8_t mavlinkHB_char = 0;             // MavLink HeartBeat character
-static uint8_t free_char1;
-static uint8_t free_char2;
-static uint8_t free_char3;
-static uint8_t msg_number;  
-
-static int8_t m2h_pitch = 0;                   // pitch from DCM
-static int8_t m2h_roll = 0;                    // roll from DCM
-static float m2h_yaw = 0;                      // relative heading form DCM - it is actually a float but HoTT needs int8
-
-static uint16_t m2h_temp = 0;                  // presure sensor temp as float
-static float m2h_abs = 0;                      // absolute pressure *0.01 as float
-
-/* time */
-static uint8_t minutes;
-static uint8_t seconds;
-static uint16_t milliseconds;
 
 /* MAVLink session control */
 static boolean  mavbeat = 0;
@@ -154,7 +91,6 @@ static uint8_t  apm_mav_type;
 static uint8_t  apm_mav_system; 
 static uint8_t  apm_mav_component;
 static boolean  mavlink_request = 0;
-static boolean  displayVersionDone = 0;
 
 /* General states */
 byte flMode;                                  /* Our current flight mode as defined */
