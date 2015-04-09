@@ -66,7 +66,7 @@
 #define PSTR(s) (__extension__({static prog_char __c[] PROGMEM = (s); &__c[0];})) 
 
 #define MAVLINK10     // Are we listening MAVLink 1.0 or 0.9   (0.9 is obsolete now)
-#define HEARTBEAT     // HeartBeat signal
+//#define HEARTBEAT     // HeartBeat signal
 #define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
 //#define DEBUGLED 12   // HottLoop debugLed
 #define JDIOBOARD     // JDrones IOBoard
@@ -88,9 +88,9 @@
 
 // Get the common arduino functions
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "Arduino.h"
+  #include "Arduino.h"
 #else
-	#include "wiring.h"
+  #include "wiring.h"
 #endif
 
 /* *************************************************/
@@ -143,7 +143,7 @@ void setup()
     TCCR1B |= (1 << CS12);
     TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt:
     sei();*/ 
-} /* end */
+} /* end */"
 /* * * * * * * * * END of setup() * * * * * * * * */
 
 /* **********  interrupt timer call  ***********/
@@ -156,7 +156,7 @@ void setup()
 void loop()
 {
   //Run "timer" every 120 miliseconds
-  if(millis() > mavLinkTimer + 120)
+  if(millis() > mavLinkTimer + 100)
   {
     mavLinkTimer = millis();
     timerEvent();

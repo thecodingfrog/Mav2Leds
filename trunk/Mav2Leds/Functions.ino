@@ -1,7 +1,12 @@
 /* This file contains conversion & calculation functions for values used for the HoTT protocol */
 
 void timerEvent()
-{  /* this event is called @ 10Hz */
+{
+  #ifdef SERDB
+    DPL("timerEvent()");
+  #endif
+  
+  /* this event is called @ 10Hz */
   ioCounter ++ ;     /* update counter to use in all blink loops */
   if (ioCounter > 10) ioCounter = 0;
 
@@ -94,16 +99,17 @@ void heartBeat()
   #endif
 
   /* check if Mavlink is lost */
-  if(messageCounter >= 50 && mavlink_active) {
-  #ifdef SERDB  
+  if(messageCounter >= 50 && mavlink_active)
+  {
+    #ifdef SERDB  
       DPL("We lost MAVLink");
-  #endif
+    #endif
     mavlink_active = 0;
     messageCounter = 0;
     mavlink_request = 1;
   }
 
-  if(messageCounter >500) messageCounter = 0;  /* to prevent overflow */
+  if(messageCounter > 500) messageCounter = 0;  /* to prevent overflow */
   #ifdef SERDB  
     if(messageCounter == 500){
       DPL("(Still) no mavlink ??");
