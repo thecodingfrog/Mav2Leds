@@ -123,7 +123,7 @@ void setup()
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
   
   #ifdef SERDB
-    dbSerial.begin(9600);
+    dbSerial.begin(57600);
     DPL("Debug Serial ready... ");
     DPL("Output only please.  ");
   #endif
