@@ -66,7 +66,7 @@
 #define PSTR(s) (__extension__({static prog_char __c[] PROGMEM = (s); &__c[0];})) 
 
 #define MAVLINK10     // Are we listening MAVLink 1.0 or 0.9   (0.9 is obsolete now)
-//#define HEARTBEAT     // HeartBeat signal
+#define HEARTBEAT     // HeartBeat signal
 #define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
 //#define DEBUGLED 12   // HottLoop debugLed
 #define JDIOBOARD     // JDrones IOBoard
@@ -115,9 +115,10 @@ static bool mavlink_active;
 /* ***************** SETUP() *******************/
 void setup()
 {
-  FastLED.addLeds<LPD8806, 2, 3, BRG>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, 4, 3, BRG>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, 5, 3, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, 9, 11, BRG>(leds[0], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, 10, 11, BRG>(leds[1], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, 5, 11, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, 6, 11, BRG>(leds[2], NUM_LEDS_PER_STRIP);
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
@@ -128,29 +129,19 @@ void setup()
     DPL("Output only please.  ");
   #endif
   
+  for(int i = 0; i < 10 ; i++)
+  {
+    digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(100);               // wait for a second
+    digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
+    delay(20);
+  }
+  
   RGBInitialize();
   
-  /* initialize Timer1 for interrupt timer events (timerEvent) */
-  /*  cli();              // disable global interrupts
-    TCCR1A = 0;         // set entire TCCR1A register to 0
-    TCCR1B = 0;         // same for TCCR1B
-    float freq = 0.1;   // every 0.1s or 10hz, same as supervisor loop AutoQuad
-    uint16_t prescaler = (freq / (6.4e-5)) -1;
- 
-    OCR1A = prescaler;        // set compare match register to desired timer count:
-    TCCR1B |= (1 << WGM12);   // turn on CTC mode:
-    TCCR1B |= (1 << CS10);    // Set CS10 and CS12 bits for 1024 prescaler:
-    TCCR1B |= (1 << CS12);
-    TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt:
-    sei();*/ 
-} /* end */"
+}
 /* * * * * * * * * END of setup() * * * * * * * * */
 
-/* **********  interrupt timer call  ***********/
-  //ISR(TIMER1_COMPA_vect)      /* Compare timer vector */
-  //{
-  //  timerEvent();             /* run everything that is on a 'critical' timer */
-  //}
   
 /* * * * * * * * *  MAIN LOOP * * * * * * * * * * */
 void loop()
