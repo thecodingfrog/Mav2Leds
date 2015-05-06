@@ -20,7 +20,7 @@ CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 int Out[] = {8,9,10,4,3,2};  /* Output I/O pin array */
 
 #define LOW_BATT   3.35      /* low battery per cell for HoTT display */
-#define LOW_BATT_2 3.2       /* low battery per cell for LED warning */
+#define LOW_BATT_2 3.3       /* low battery per cell for LED warning */
 #define throttleMin 1100     /* Throttle min position for flighttimer */
 
 /* Bearing calculation, define MAV to Home bearing (view from MAV use in OSD) or Home to MAV bearing (view from Home) */
