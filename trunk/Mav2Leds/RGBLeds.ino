@@ -64,31 +64,23 @@ void RGBControl()
 {
   if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) )
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
-    r=127;
-    g=32;
-    b=0;
+    colorBlink(CRGB::Orange, -1, -1, 50, 3, CRGB::Orange, preserved_leds.external);
   }
   else
   {
-    r=127;
-    g=127;
-    b=127;
-  }
-  
-  //flMode = 4;
   
     if (m2h_sysstat == 5) // MAV_STATE_CRITICAL
     {
       colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
     }
-    else if (isArmed == 0)            // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
+    else if (isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
       if (m2h_fix_type == 3)
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       else 
         colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
     }
-    else if (mode_str == "stab" && isArmed == 1)            // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
+    else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
     {
       if (m2h_fix_type == 3)
       {
@@ -132,6 +124,15 @@ void RGBControl()
     {
       colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.internal);
     }
+    else if (mode_str == "auto") // AUTO
+    {
+      colorChase(CRGB::Green, -1, -1, 50, preserved_leds.internal);
+      colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.internal);
+    }
+    else if (mode_str == "tune") // AUTOTUNE
+    {
+      colorBlink(CRGB::Purple, -1, -1, 50, 3, CRGB::Purple, preserved_leds.external);
+    }
    
     /*case 11:      // lost signal: red / blue alternating
     {
@@ -144,7 +145,8 @@ void RGBControl()
       colorBlink(CRGB::White, -1, -1, 50, 3, CRGB::White, preserved_leds.none);
       
       //colorChaseBackAll(CRGB::Red, 50);
-    }    
+    }
+  }   
 }
 
 /**
