@@ -182,7 +182,7 @@ void colorArm(CRGB c, int idx1, int idx2, byte preserved)
     {
       for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
       {
-        if (j + 1 >= 7 && preserved == preserved_leds.external)
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
         {
           
         }
@@ -333,7 +333,7 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
     {
       if (x == idx1 || x == idx2 || idx1 == -1)
       {
-        if (j + 1 >= 7 && preserved == preserved_leds.external)
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
         {
           
         }
@@ -351,6 +351,60 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
   
   FastLED.show(); // for last erased pixel
 }
+
+/*
+
+void rainbowLoop() {                        //-m3-LOOP HSV RAINBOW
+  arrayIndex++;
+  funcHue = funcHue + thisstep;
+  if (arrayIndex >= LED_COUNT) {
+    arrayIndex = 0;
+  }
+  if (funcHue > 255) {
+    funcHue = 0;
+  }
+  leds[arrayIndex] = CHSV(funcHue, funcSat, 255);
+  LEDS.show();
+  delay(funcDelay);
+}
+
+void rainbowCircle()
+{        // rainbow in a circle at different speeds
+  int funcSat;
+  int funcHue;
+  for (int funcDelay = 1; funcDelay < 30; funcDelay = funcDelay = funcDelay + 2)
+  {
+    for (int arrayIndex = 0; arrayIndex < LED_COUNT; arrayIndex++)
+    {
+      if (funcHue > 255)
+      {
+        funcHue = 0;
+      }
+      leds[arrayIndex] = CHSV(funcHue, funcSat, 255);
+      LEDS.show();
+      delay(funcDelay);
+      leds[arrayIndex] = CHSV(0,0,0);
+      LEDS.show();
+      funcHue = funcHue + thisstep;
+    }
+  }
+  for (int funcDelay = 30; funcDelay > 0; funcDelay = funcDelay = funcDelay - 2)
+  {
+    for (int arrayIndex = 0; arrayIndex < LED_COUNT; arrayIndex++)
+    {
+      if (funcHue > 255)
+      {
+        funcHue = 0;
+      }
+      leds[arrayIndex] = CHSV(funcHue, funcSat, 255);
+      LEDS.show();
+      delay(funcDelay);
+      leds[arrayIndex] = CHSV(0,0,0);
+      LEDS.show();
+      funcHue = funcHue + thisstep;
+    }
+  }
+}*/
 
 /**
 * Clear all strips
