@@ -77,8 +77,11 @@ void RGBControl()
     {
       if (m2h_fix_type == 3)
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
-      else 
-        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+      else
+      {
+          //colorChaseBack(CRGB::Blue, -1, -1, 50, preserved_leds.external);
+          colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+      }
     }
     else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
     {
