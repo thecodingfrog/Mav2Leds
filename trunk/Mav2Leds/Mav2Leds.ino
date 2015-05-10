@@ -67,9 +67,8 @@
 
 #define MAVLINK10     // Are we listening MAVLink 1.0 or 0.9   (0.9 is obsolete now)
 #define HEARTBEAT     // HeartBeat signal
-#define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
+//#define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
 //#define DEBUGLED 12   // HottLoop debugLed
-#define JDIOBOARD     // JDrones IOBoard
 
 /* **********************************************/
 /* ***************** INCLUDES *******************/
@@ -152,7 +151,9 @@ void loop()
     mavLinkTimer = millis();
     timerEvent();
   }
-  //DPL("loop");
+  #ifdef SERDB
+    DPL("loop");
+  #endif
   read_mavlink();
   //RGBControl();
 }
