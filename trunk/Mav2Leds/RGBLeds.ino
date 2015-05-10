@@ -62,6 +62,7 @@ void circle()
 
 void RGBControl()
 {
+  
   if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) )
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
     colorBlink(CRGB::Orange, -1, -1, 50, 3, CRGB::Orange, preserved_leds.external);
@@ -79,7 +80,6 @@ void RGBControl()
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       else
       {
-          //colorChaseBack(CRGB::Blue, -1, -1, 50, preserved_leds.external);
           colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
       }
     }
@@ -136,6 +136,12 @@ void RGBControl()
     {
       colorBlink(CRGB::Purple, -1, -1, 50, 3, CRGB::Purple, preserved_leds.external);
     }
+    else // no valid signal, 1 red led
+    {
+      colorBlink(CRGB::White, -1, -1, 50, 3, CRGB::White, preserved_leds.none);
+      
+      //colorChaseBackAll(CRGB::Red, 50);
+    }
    
     /*case 11:      // lost signal: red / blue alternating
     {
@@ -143,13 +149,8 @@ void RGBControl()
     }
     break;*/ 
   
-    else // no valid signal, 1 red led
-    {
-      colorBlink(CRGB::White, -1, -1, 50, 3, CRGB::White, preserved_leds.none);
-      
-      //colorChaseBackAll(CRGB::Red, 50);
-    }
-  }   
+    
+  } 
 }
 
 /**
@@ -189,7 +190,7 @@ void colorArm(CRGB c, int idx1, int idx2, byte preserved)
         {
           
         }
-        else if (j + 1 <= 1 && preserved == preserved_leds.internal)
+        else if (j + 1 <= 2 && preserved == preserved_leds.internal)
         {
           
         }
@@ -210,7 +211,7 @@ void colorChaseAll(CRGB c, uint8_t wait)
 {
   clearstrips();
   
-  colorChase(c, -1, -1, wait);
+  colorChase(c, -1, -1, wait, true, preserved_leds.none);
 }
 
 /**
@@ -218,13 +219,21 @@ void colorChaseAll(CRGB c, uint8_t wait)
 */
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait)
 {
-  colorChase(c, idx1, idx2, wait, true);
+  colorChase(c, idx1, idx2, wait, true, preserved_leds.none);
 }
 
 /**
 * Color chase forward
 */
-void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle)
+void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
+{
+  colorChase(c, idx1, idx2, wait, true, preserved);
+}
+
+/**
+* Color chase forward
+*/
+void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte preserved)
 {
   for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)  // turn all pixels off
   {
@@ -238,12 +247,25 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle)
     {
       for(int x = 0; x < NUM_STRIPS; x++)
       {
-        if (x == idx1 || x == idx2 || idx1 == -1) leds[x][j] = CRGB::Black;
-      }
-    }
-  }
-  
-  FastLED.show(); // for last erased pixel
+        if (x == idx1 || x == idx2 || idx1 == -1)
+        {
+            if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
+            {
+              
+            }
+            else if (j + 1 <= 2 && preserved == preserved_leds.internal)
+            {
+              
+            }
+            else
+            {
+              leds[x][j] = CRGB::Black;
+            }
+         }
+       }
+       FastLED.show(); // for last erased pixel
+     }
+  } 
 }
 
 /**
@@ -340,7 +362,7 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
         {
           
         }
-        else if (j + 1 <= 1 && preserved == preserved_leds.internal)
+        else if (j + 1 <= 2 && preserved == preserved_leds.internal)
         {
           
         }
