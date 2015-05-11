@@ -34,26 +34,6 @@
 //
 //  If you use, redistribute this please mention original source.
 //
-//  jD-IOBoard pinouts
-//
-//             S M M G       R T R
-//         5 5 C O I N D D D X X S
-//         V V K S S D 7 6 5 1 1 T
-//         | | | | | | | | | | | |
-//      +----------------------------+
-//      |O O O O O O O O O O O O O   |
-// O1 - |O O   | | |                O| _ DTS 
-// O2 - |O O   3 2 1                O| - RX  F
-// O3 - |O O   1 1 1                O| - TX  T
-// O4 - |O O   D D D                O| - 5V  D
-// O5 - |O O                        O| _ CTS I
-// O6 - |O O O O O O O O   O O O O  O| - GND
-//      +----------------------------+
-//       |   | | | | | |   | | | |
-//       C   G 5 A A A A   S S 5 G
-//       O   N V 0 1 2 3   D C V N
-//       M   D             A L   D
-//       + High power
 /* **************************************************************************** */
 
 /* ************************************************************ */
@@ -114,10 +94,10 @@ static bool mavlink_active;
 /* ***************** SETUP() *******************/
 void setup()
 {
-  FastLED.addLeds<LPD8806, 9, 11, BRG>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, 10, 11, BRG>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, 5, 11, BRG>(leds[2], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, 6, 11, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
@@ -157,3 +137,4 @@ void loop()
   read_mavlink();
   //RGBControl();
 }
+

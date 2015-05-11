@@ -10,14 +10,13 @@ static unsigned long mavLinkTimer = 0;
 #define NUM_LEDS_PER_STRIP 8
 CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
-#define RR  Out[0]    // Rear right    port D8  = bit 1 from PORTB
-#define FR  Out[1]    // Front right   port D9  = bit 2 from PORTB
-#define FL  Out[2]    // Front left    port D10 = bit 3 from PORTB
-#define RL  Out[3]    // Rear left     port D4  = bit 5 from PORTD
-#define EX  Out[4]    // Extra led     port D3  = bit 4 from PORTD
+#define RR  5    // Rear right    port D5
+#define FR  9    // Front right   port D9
+#define FL  6    // Front left    port D6
+#define RL  10    // Rear left     port D10
+#define CLK  11    // Clock port
 #define ledPin 13     // Heartbeat LED if any
 /* direct port manupulation instead of digitalwrite. faster and smaller in code */
-int Out[] = {8,9,10,4,3,2};  /* Output I/O pin array */
 
 #define LOW_BATT   3.35      /* low battery per cell for HoTT display */
 #define LOW_BATT_2 3.3       /* low battery per cell for LED warning */
@@ -106,4 +105,5 @@ struct Preserved
   byte internal;
   byte external;
 };
+
 
