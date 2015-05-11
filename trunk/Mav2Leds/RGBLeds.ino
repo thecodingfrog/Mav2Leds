@@ -16,35 +16,6 @@ void RGBInitialize()
   }
 }
 
-void circle()
-{
-  for(int i = 0; i < 10; i++)
-  {
-    for(int x = 0; x < NUM_STRIPS; x++)
-    {
-      if (x > 0)
-      {
-        for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
-        {
-          leds[x - 1][j] = CRGB::Black;
-          FastLED.show();
-        }
-      }
-      for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
-      {
-        leds[x][j] = CRGB::Blue;
-      }
-      FastLED.show();
-      delay(100);
-    }
-    for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
-    {
-      leds[NUM_STRIPS - 1][j] = CRGB::Black;
-      FastLED.show();
-    }
-  }
-}
-
 void RGBControl()
 {
   
@@ -437,5 +408,34 @@ void clearstrip(int idx)
 {
   fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);
   FastLED.show();
+}
+
+void circle()
+{
+  for(int i = 0; i < 10; i++)
+  {
+    for(int x = 0; x < NUM_STRIPS; x++)
+    {
+      if (x > 0)
+      {
+        for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
+        {
+          leds[x - 1][j] = CRGB::Black;
+          FastLED.show();
+        }
+      }
+      for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
+      {
+        leds[x][j] = CRGB::Blue;
+      }
+      FastLED.show();
+      delay(100);
+    }
+    for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
+    {
+      leds[NUM_STRIPS - 1][j] = CRGB::Black;
+      FastLED.show();
+    }
+  }
 }
 
