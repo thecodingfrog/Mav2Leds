@@ -78,7 +78,7 @@ void RGBControl()
       { 
         colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
       }
-      colorChase(CRGB::Red, 2, 3, 50, false);
+      colorChase(CRGB::Red, 2, 3, 50, false, preserved_leds.external);
     
     }
     else if (mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)

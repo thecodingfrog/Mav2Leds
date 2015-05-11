@@ -10,10 +10,10 @@ static unsigned long mavLinkTimer = 0;
 #define NUM_LEDS_PER_STRIP 8
 CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
 
-#define RR  5    // Rear right    port D5
-#define FR  9    // Front right   port D9
-#define FL  6    // Front left    port D6
-#define RL  10    // Rear left     port D10
+#define FR  9    // Rear right    port D5
+#define RR  5    // Front right   port D9
+#define FL  10    // Front left    port D6
+#define RL  6    // Rear left     port D10
 #define CLK  11    // Clock port
 #define ledPin 13     // Heartbeat LED if any
 /* direct port manupulation instead of digitalwrite. faster and smaller in code */
@@ -104,6 +104,7 @@ struct Preserved
   byte none;
   byte internal;
   byte external;
+  byte both;
 };
 
 
