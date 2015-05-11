@@ -1,24 +1,9 @@
 /* functions for the LPD8806 RGB ledstrip controller 
  * in this case the strips are cut in strands, multiple sets of 2 led eg 4 leds
  * the number of leds needs to be set in this file
- * 
- * For this implementation the strand is 8 leds, but cut in two pieces of four LED's. 
- * The strips are however connected using the SPI interface in-out so for the SPI bus it is still 8 leds
- * Using this on an quad-x, leds 0-3 on the front arms, leds 4-7 on the rear
  *
  * LED patterns are hard coded to the flightstatus number but use your imagination to write your own patterns 
  */
-
-/*int FL[] = {0};
-int FR[] = {8};
-int FRONT[] = {FL[0],FR[0]};
-int RL[] = {0};
-int RR[] = {8};
-int REAR[] = {RL[0],RR[0]};*/
-
-/* First parameter is the number of LEDs in the strand.  The LED strips
- * are 32 LEDs per meter but you can extend or cut the strip.  Next two
- * parameters are SPI data and clock pins: */
 
 Preserved preserved_leds = { 0 , 1 , 2 };
 
