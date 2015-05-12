@@ -36,7 +36,7 @@ void RGBControl()
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       else
       {
-          colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
       }
     }
     else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
@@ -77,7 +77,7 @@ void RGBControl()
     }
     else if (mode_str == "land") // LAND
     {
-      colorChaseBack(CRGB::Green, -1, -1, 50);
+      colorChaseBack(CRGB::Purple, -1, -1, 50, preserved_leds.internal);
     }
     else if (mode_str == "rtl") // RTL
     {
@@ -103,9 +103,7 @@ void RGBControl()
     {
       colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
     }
-    break;*/ 
-  
-    
+    break;*/    
   } 
 }
 
@@ -408,6 +406,30 @@ void clearstrip(int idx)
 {
   fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);
   FastLED.show();
+}
+
+boolean isExternal(byte preserved)
+{
+  if (preserved == preserved_leds.external)
+    return true;
+  else if (preserved == preserved_leds.both)
+    return true;
+  else if (preserved == preserved_leds.none)
+    return false;
+  else
+    return false;
+}
+
+boolean isInternal(byte preserved)
+{
+  if (preserved == preserved_leds.internal)
+    return true;
+  else if (preserved == preserved_leds.both)
+    return true;
+  else if (preserved == preserved_leds.none)
+    return false;
+  else
+    return false;
 }
 
 void circle()
