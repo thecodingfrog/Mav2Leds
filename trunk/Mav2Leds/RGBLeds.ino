@@ -73,15 +73,15 @@ void RGBControl()
     }
     else if (mode_str == "loit") // LOITER
     {
-      colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.internal);
+      colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.both);
     }
     else if (mode_str == "land") // LAND
     {
-      colorChaseBack(CRGB::Purple, -1, -1, 50, preserved_leds.internal);
+      colorChaseBack(CRGB::Purple, -1, -1, 50, preserved_leds.both);
     }
     else if (mode_str == "rtl") // RTL
     {
-      colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.internal);
+      colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.both);
     }
     else if (mode_str == "auto") // AUTO
     {
