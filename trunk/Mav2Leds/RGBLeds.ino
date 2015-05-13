@@ -5,7 +5,7 @@
  * LED patterns are hard coded to the flightstatus number but use your imagination to write your own patterns 
  */
 
-Preserved preserved_leds = { 0 , 1 , 2 };
+Preserved preserved_leds = { 0, 1, 2, 3 };
 
 void RGBInitialize()
 {
@@ -140,11 +140,11 @@ void colorArm(CRGB c, int idx1, int idx2, byte preserved)
     {
       for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
       {
-        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && isExternal(preserved))
         {
           
         }
-        else if (j + 1 <= 2 && preserved == preserved_leds.internal)
+        else if (j + 1 <= 2 && isInternal(preserved))
         {
           
         }
@@ -203,11 +203,11 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte pr
       {
         if (x == idx1 || x == idx2 || idx1 == -1)
         {
-            if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
+            if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && isExternal(preserved))
             {
               
             }
-            else if (j + 1 <= 2 && preserved == preserved_leds.internal)
+            else if (j + 1 <= 2 && isInternal(preserved))
             {
               
             }
@@ -312,11 +312,11 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
     {
       if (x == idx1 || x == idx2 || idx1 == -1)
       {
-        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && preserved == preserved_leds.external)
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && isExternal(preserved))
         {
           
         }
-        else if (j + 1 <= 2 && preserved == preserved_leds.internal)
+        else if (j + 1 <= 2 && isInternal(preserved))
         {
           
         }
@@ -408,26 +408,30 @@ void clearstrip(int idx)
   FastLED.show();
 }
 
+/**
+* Check if external leds should be preserved
+* @param preserved Strip part to preserve
+*/
 boolean isExternal(byte preserved)
 {
   if (preserved == preserved_leds.external)
     return true;
   else if (preserved == preserved_leds.both)
     return true;
-  else if (preserved == preserved_leds.none)
-    return false;
   else
     return false;
 }
 
+/**
+* Check if internal leds should be preserved
+* @param preserved Strip part to preserve
+*/
 boolean isInternal(byte preserved)
 {
   if (preserved == preserved_leds.internal)
     return true;
   else if (preserved == preserved_leds.both)
     return true;
-  else if (preserved == preserved_leds.none)
-    return false;
   else
     return false;
 }
