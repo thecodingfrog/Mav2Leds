@@ -21,7 +21,7 @@ void RGBControl()
   
   if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) )
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
-    colorBlink(CRGB::Orange, -1, -1, 50, 3, CRGB::Orange, preserved_leds.external);
+    colorBlink(CRGB::OrangeRed, -1, -1, 50, 3, CRGB::OrangeRed, preserved_leds.external);
   }
   else
   {
@@ -67,9 +67,9 @@ void RGBControl()
     else if (mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
     {
       if (m2h_fix_type == 3)
-        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
-      else
         colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
+      else
+        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
     }
     else if (mode_str == "loit") // LOITER
     {
