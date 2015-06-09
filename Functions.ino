@@ -49,7 +49,7 @@ void CheckFlightMode()
     else if (flight_mode == 3) mode_str = "auto"; //Auto
     else if (flight_mode == 4) mode_str = "guid"; //Guided
     else if (flight_mode == 5) mode_str = "loit"; //Loiter
-    else if (flight_mode == 6) mode_str = "rtl "; //Return to Launch
+    else if (flight_mode == 6) mode_str = "rtl"; //Return to Launch
     else if (flight_mode == 7) mode_str = "circ"; //Circle
     //else if (flight_mode == 8) mode_str = "posi"; //Position Hold (Old)
     else if (flight_mode == 9) mode_str = "land"; //Land
