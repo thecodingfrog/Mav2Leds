@@ -2,7 +2,7 @@
 
  Copyright (c) 2015.  All rights reserved.
  An Open Source Arduino based on mav2hott
-   Program    : Mav2Leds
+  Program    : Mav2Leds
   Version    : v1.0, 30.05.2015
   Author     : Jean-Louis PERSAT (jeanlouis.persat@free.fr)
  

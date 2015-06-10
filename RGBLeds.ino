@@ -33,10 +33,12 @@ void RGBControl()
     else if (isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
       if (m2h_fix_type == 3)
-        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
-      else
       {
         colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+      }        
+      else
+      {
+        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       }
     }
     else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
@@ -73,15 +75,15 @@ void RGBControl()
     }
     else if (mode_str == "loit") // LOITER
     {
-      colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.both);
+      colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Red, preserved_leds.both);
     }
     else if (mode_str == "land") // LAND
     {
-      colorChaseBack(CRGB::Purple, -1, -1, 50, preserved_leds.both);
+      colorChase(CRGB::Purple, -1, -1, 50, preserved_leds.both);
     }
     else if (mode_str == "rtl") // RTL
     {
-      colorChaseBack(CRGB::Green, -1, -1, 50, preserved_leds.both);
+      colorChase(CRGB::Green, -1, -1, 50, preserved_leds.both);
     }
     else if (mode_str == "auto") // AUTO
     {
@@ -189,7 +191,7 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 */
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte preserved)
 {
-  for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)  // turn all pixels off
+  for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
   {
     for(int x = 0; x < NUM_STRIPS; x++)
     {
@@ -217,7 +219,7 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte pr
             }
          }
        }
-       FastLED.show(); // for last erased pixel
+       FastLED.show();
      }
   } 
 }
@@ -265,7 +267,7 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2, by
     FastLED.show();
     delay(wait);
     colorArm(CRGB::Black, idx1, idx2, preserved);
-    FastLED.show(); // for last erased pixel
+    FastLED.show();
     delay(wait);
   }
   if (cycle > 1)
@@ -300,7 +302,7 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait)
 */
 void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 {
-  for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)  // turn all pixels off
+  for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)
   {
     for(int x = 0; x < NUM_STRIPS; x++)
     {
@@ -328,7 +330,7 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
     }
   }
   
-  FastLED.show(); // for last erased pixel
+  FastLED.show();
 }
 
 /*
@@ -390,9 +392,9 @@ void rainbowCircle()
 */
 void clearstrips()
 {
-  for(int x = 0; x < NUM_STRIPS; x++)  // turn all pixels off
+  for(int x = 0; x < NUM_STRIPS; x++)
   {
-    fill_solid(leds[x], NUM_LEDS_PER_STRIP, CRGB::Black);
+    fill_solid(leds[x], NUM_LEDS_PER_STRIP, CRGB::Black);  // turn all pixels off
   }
   FastLED.show();
 }
@@ -404,7 +406,7 @@ void clearstrips()
 */
 void clearstrip(int idx)
 {
-  fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);
+  fill_solid(leds[idx], NUM_LEDS_PER_STRIP, CRGB::Black);  // turn all pixels off
   FastLED.show();
 }
 
