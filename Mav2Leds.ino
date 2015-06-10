@@ -90,10 +90,10 @@ static bool mavlink_active;
 /* ***************** SETUP() *******************/
 void setup()
 {
-  FastLED.addLeds<WS2812, FR>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<WS2812, FL>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<WS2812, RR>(leds[2], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<WS2812, RL>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
