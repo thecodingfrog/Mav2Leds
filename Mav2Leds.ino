@@ -1,10 +1,10 @@
 /*
 
- Copyright (c) 2012.  All rights reserved.
- An Open Source Arduino based jD_IOBoard driver for MAVLink & HoTT
-   Program    : mav2hott
-  Version    : v0.83, 10.02.2013
-  Author     : Menno de Gans (joebar.rc@googlemail.com)
+ Copyright (c) 2015.  All rights reserved.
+ An Open Source Arduino based on mav2hott
+   Program    : Mav2Leds
+  Version    : v1.0, 30.05.2015
+  Author     : Jean-Louis PERSAT (jeanlouis.persat@free.fr)
  
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,12 +22,8 @@
 //////////////////////////////////////////////////////////////////////////
 //  Description: 
 // 
-//  This Arduino sketch is used for listen to AutoQuad's mavlink commands
-//  change LED light patterns according to the mavlink messages and 
-//  transmitt mavlink decoded AutoQuad data to a Graupner HoTT telemetry
-//  transmitter using a HoTT telemetry receiver.
-//  It is based on JDrones IO board with LED drivers but any Arduino bord
-//  can be used. You can sue the #define for setting the JDrones IO board
+//  This Arduino sketch is used for listen to APM's or Pixhawk mavlink commands
+//  change LED light patterns according to the mavlink messages.
 //
 //  Please note that the DigitalWriteFast library is used to speed up the 
 //  IO. This library needs to be included in the Arduino library to function
@@ -80,8 +76,8 @@ FastSerialPort0(Serial);           /* Our Uart port for Mavlink*/
 #define DPL dbSerial.println 
 #define DPN dbSerial.print
 
-static uint8_t hRX=10;              /* software serial port for HoTT OR! Debug */
-static uint8_t hTX=11;              /* if using the JDrones board use 6 & 5 */
+static uint8_t hRX=7;              /* software serial port for HoTT OR! Debug */
+static uint8_t hTX=8;              /* if using the JDrones board use 6 & 5 */
 
 #ifdef SERDB
   SoftwareSerial dbSerial(hRX,hTX);    /* (rx port,tx port) */
@@ -94,10 +90,10 @@ static bool mavlink_active;
 /* ***************** SETUP() *******************/
 void setup()
 {
-  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<WS2812, FR>(leds[0], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<WS2812, FL>(leds[1], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<WS2812, RR>(leds[2], NUM_LEDS_PER_STRIP);
+  FastLED.addLeds<WS2812, RL>(leds[2], NUM_LEDS_PER_STRIP);
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
