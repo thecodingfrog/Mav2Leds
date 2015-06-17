@@ -59,8 +59,9 @@
 #include <digitalWriteFast.h>    /* Direct portmanipulation library to replace digitalWrite. This is faster and smaller in code */
 #include <FastLED.h>
 #include <mthread.h>
-#include "Mav2LedsController.h"
 #include "Mav2Leds2.h"            /* Configurations */
+#include "MavLinkJobs.h"
+#include "LedController.h"
 
 
 // Get the common arduino functions
@@ -92,10 +93,7 @@ static bool mavlink_active;
 /* ***************** SETUP() *******************/
 void setup()
 {
-  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  
   
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
@@ -107,8 +105,8 @@ void setup()
     DPL("Output only please.  ");
   #endif
   
-  main_thread_list->add_thread(new Mav2LedsController());
-  //main_thread_list->add_thread(__TimerEventLoop);
+  main_thread_list->add_thread(new MavLinkJobs());
+  main_thread_list->add_thread(new LedController());
   
 }
 /* * * * * * * * * END of setup() * * * * * * * * */
