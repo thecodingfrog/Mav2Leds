@@ -3,10 +3,10 @@
 
 // this code was moved from libraries/GCS_MAVLink to allow compile
 // time selection of MAVLink 1.0
-BetterStream	*mavlink_comm_0_port;
-BetterStream	*mavlink_comm_1_port;
+//BetterStream	*mavlink_comm_0_port;
+//BetterStream	*mavlink_comm_1_port;
 
-mavlink_system_t mavlink_system = {12,1,0,0};
+//mavlink_system_t mavlink_system = {12,1,0,0};
 
 #include "../GCS_MAVLink/include/mavlink/v1.0/mavlink_types.h"
 #include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/mavlink.h" 
@@ -37,6 +37,7 @@ void request_mavlink_rates()
 }
 
 void read_mavlink(){
+  Serial.println("read_mavlink()");
   mavlink_message_t msg; 
   mavlink_status_t status;
   

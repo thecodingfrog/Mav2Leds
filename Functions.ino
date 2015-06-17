@@ -2,6 +2,7 @@
 
 void timerEvent()
 {
+  Serial.println("timerEvent()");
   #ifdef SERDB
     DPL("timerEvent()");
   #endif
