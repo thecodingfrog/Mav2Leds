@@ -34,11 +34,11 @@ void RGBControl()
     {
       if (m2h_fix_type == 3) // 3D Fix
       {
-        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       }        
       else
       {
-        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
+        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
       }
     }
     else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
@@ -116,7 +116,7 @@ void colorPreserved()
 {
   for(int x = 0; x < NUM_STRIPS; x++)
   {
-    for(int j = 6; j < NUM_LEDS_PER_STRIP; j++)
+    for(int j = 6; j < NUM_LEDS_PER_STRIP; j++) //Only external leds
     {
       if (x == 0 || x== 1)
       {
@@ -220,7 +220,7 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 */
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte preserved)
 {
-  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  if (isExternal(preserved)) colorPreserved(); // Color preserved leds
   
   for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
   {
@@ -298,7 +298,7 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, byte preser
 */
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2, byte preserved)
 {
-  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  if (isExternal(preserved)) colorPreserved(); // Color preserved leds
   
   for(int x = 0; x < cycle; x++)
   {
@@ -349,7 +349,7 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait)
 */
 void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 {
-  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  if (isExternal(preserved)) colorPreserved(); // Color preserved leds
   
   for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)
   {
