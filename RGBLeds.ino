@@ -32,46 +32,46 @@ void RGBControl()
     }
     else if (isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
-      if (m2h_fix_type == 3)
+      if (m2h_fix_type == 3) // 3D Fix
       {
-        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
+        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Blue, preserved_leds.none);
       }        
       else
       {
-        colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
+        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Green, preserved_leds.none);
       }
     }
     else if (mode_str == "stab" && isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
     {
-      if (m2h_fix_type == 3)
+      if (m2h_fix_type == 3) // 3D Fix
       {
-        colorChaseBack(CRGB::Blue, 0, 1, 50, preserved_leds.external);
+        colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
       }
       else
       { 
-        colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
+        colorChaseBack(CRGB::Blue, 0, 1, 50, preserved_leds.external);
       }
       colorChase(CRGB::Red, 2, 3, 50, false, preserved_leds.external);
     
     }
     else if (mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
     {
-      if (m2h_fix_type == 3)
+      if (m2h_fix_type == 3) // 3D Fix
       {
-        colorChaseBack(CRGB::Blue, 0, 1, 50, preserved_leds.external);
+        colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
       }
       else 
       {
-        colorChaseBack(CRGB::Green, 0, 1, 50, preserved_leds.external);
+        colorChaseBack(CRGB::Blue, 0, 1, 50, preserved_leds.external);
       }
       colorBlink(CRGB::Red, 2, 3, 50, 3, preserved_leds.external);
     }
     else if (mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
     {
-      if (m2h_fix_type == 3)
-        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
-      else
+      if (m2h_fix_type == 3) // 3D Fix
         colorBlink(CRGB::Green, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
+      else
+        colorBlink(CRGB::Blue, -1, -1, 50, 3, CRGB::Red, preserved_leds.external);
     }
     else if (mode_str == "loit") // LOITER
     {
@@ -107,6 +107,35 @@ void RGBControl()
     }
     break;*/    
   } 
+}
+
+/**
+* Color external leds
+*/
+void colorPreserved()
+{
+  for(int x = 0; x < NUM_STRIPS; x++)
+  {
+    for(int j = 6; j < NUM_LEDS_PER_STRIP; j++)
+    {
+      if (x == 0 || x== 1)
+      {
+        if (m2h_fix_type == 3) // 3D Fix
+        {
+          leds[x][j] = CRGB::Green;
+        }
+        else
+        {
+          leds[x][j] = CRGB::Blue;
+        }
+      }
+      else
+      {
+        leds[x][j] = CRGB::Red;
+      }
+    }
+  }
+  FastLED.show();
 }
 
 /**
@@ -191,11 +220,27 @@ void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 */
 void colorChase(CRGB c, int idx1, int idx2, uint8_t wait, boolean cycle, byte preserved)
 {
+  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  
   for(int j = 0; j < NUM_LEDS_PER_STRIP; j++)
   {
     for(int x = 0; x < NUM_STRIPS; x++)
     {
-      if (x == idx1 || x == idx2 || idx1 == -1) leds[x][j] = c;
+      if (x == idx1 || x == idx2 || idx1 == -1)
+      {
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && isExternal(preserved))
+        {
+          
+        }
+        else if (j + 1 <= 2 && isInternal(preserved))
+        {
+          
+        }
+        else
+        {
+          leds[x][j] = c;
+        }
+      }
     }
     FastLED.show();
     delay(wait);
@@ -253,16 +298,18 @@ void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, byte preser
 */
 void colorBlink(CRGB c, int idx1, int idx2, uint8_t wait, int cycle, CRGB c2, byte preserved)
 {
+  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  
   for(int x = 0; x < cycle; x++)
   {
     if (idx1 == -1 || idx2 == -1)
     {
-      colorArm(c, 0, 1); // FRONT
-      colorArm(c2, 2, 3); // REAR
+      colorArm(c, 0, 1, preserved); // FRONT
+      colorArm(c2, 2, 3, preserved); // REAR
     }
     else
     {
-      colorArm(c, idx1, idx2);
+      colorArm(c, idx1, idx2, preserved);
     }
     FastLED.show();
     delay(wait);
@@ -302,11 +349,27 @@ void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait)
 */
 void colorChaseBack(CRGB c, int idx1, int idx2, uint8_t wait, byte preserved)
 {
+  //if (isExternal(preserved)) colorPreserved(); // Color preserved leds
+  
   for(int j = NUM_LEDS_PER_STRIP - 1; j > -1; j--)
   {
     for(int x = 0; x < NUM_STRIPS; x++)
     {
-      if (x == idx1 || x == idx2 || idx1 == -1) leds[x][j] = c;
+      if (x == idx1 || x == idx2 || idx1 == -1)
+      {
+        if (j + 1 >= (NUM_LEDS_PER_STRIP - 1) && isExternal(preserved))
+        {
+          
+        }
+        else if (j + 1 <= 2 && isInternal(preserved))
+        {
+          
+        }
+        else
+        {
+          leds[x][j] = c;
+        }
+      }
     }
     FastLED.show();
     delay(wait);
