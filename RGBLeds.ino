@@ -26,9 +26,19 @@ void RGBControl()
   else
   {
   
-    if (m2h_sysstat == 5) // MAV_STATE_CRITICAL
+    if (m2h_sysstat < 2) // MAV_STATE_BOOT
     {
       colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
+    }
+    else if (m2h_sysstat == 2) // MAV_STATE_CALIBRATING
+    {
+      colorArmAll(CRGB::Blue);
+      colorArmAll(CRGB::Red);
+    }
+    else if (m2h_sysstat > 4) // MAV_STATE_CRITICAL and over
+    {
+      colorArmAll(CRGB::Yellow);
+      colorArmAll(CRGB::Red);
     }
     else if (isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
