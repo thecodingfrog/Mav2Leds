@@ -43,7 +43,7 @@ void RGBControl()
       //delay(200);
       //colorArmAll(CRGB::Red);
       //delay(150);
-      colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
+      colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.external);
     }
     else if (isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
     {
