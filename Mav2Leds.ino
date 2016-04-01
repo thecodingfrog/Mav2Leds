@@ -48,18 +48,13 @@
 
 /* **********************************************/
 /* ***************** INCLUDES *******************/
-#include <FastSerial.h>
+#include <SingleSerial.h> // MUST be first
 #include <math.h>
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+#include <avr/wdt.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <GCS_MAVLink.h>
-#include <SoftwareSerial.h>
-#include <digitalWriteFast.h>    /* Direct portmanipulation library to replace digitalWrite. This is faster and smaller in code */
-#include <FastLED.h>
-#include "Mav2Leds.h"            /* Configurations */
-
 
 // Get the common arduino functions
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -67,11 +62,15 @@
 #else
   #include "wiring.h"
 #endif
+#include <digitalWriteFast.h>
+#include <FastLED.h>
+#include <GCS_MAVLink.h>
+#include "Mav2Leds.h"
 
 /* *************************************************/
 /* ***************** DEFINITIONS *******************/
 #define TELEMETRY_SPEED  57600    /* MAVLink telemetry speed.*/
-FastSerialPort0(Serial);           /* Our Uart port for Mavlink*/
+SingleSerialPort(Serial);           /* Our Uart port for Mavlink*/
 
 #define DPL dbSerial.println 
 #define DPN dbSerial.print
@@ -103,6 +102,8 @@ void setup()
     DPL("Debug Serial ready... ");
     DPL("Output only please.  ");
   #endif
+
+  pinMode(ledPin, OUTPUT);
   
   for(int i = 0; i < 10 ; i++)
   {
@@ -133,4 +134,3 @@ void loop()
   read_mavlink();
   //RGBControl();
 }
-

@@ -13,9 +13,8 @@ void timerEvent()
   /* 10Hz calls */
   /* do the LED stuff 
    * RGB controller LEDstrip or directly attached LEDs */
-  RGBControl();
-
   heartBeat();
+  RGBControl();
 
   /* end 10Hz calls */
 

@@ -81,6 +81,10 @@ static uint8_t  m2h_sysstat = 0;                // system status (active,standby
 static uint8_t  m2h_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
 
 static uint16_t throttle = 0;                  // throttle value
+static uint8_t severity = 0;
+static char* severity_text;
+static boolean checks_ok = 1;
+
 
 static uint8_t mavlinkHB_char = 0;             // MavLink HeartBeat character
 
@@ -106,5 +110,7 @@ struct Preserved
   byte external;
   byte both;
 };
+
+Preserved preserved_leds = { 0, 1, 2, 3 };
 
 

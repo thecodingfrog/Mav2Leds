@@ -5,7 +5,6 @@
  * LED patterns are hard coded to the flightstatus number but use your imagination to write your own patterns 
  */
 
-Preserved preserved_leds = { 0, 1, 2, 3 };
 
 void RGBInitialize()
 {
@@ -25,7 +24,10 @@ void RGBControl()
   }
   else
   {
-  
+    /*if(!checks_ok)
+    {
+      colorBlink(CRGB::Red, -1, -1, 50, 3, CRGB::Red, preserved_leds.none);
+    }*/
     if (m2h_sysstat < 2) // MAV_STATE_BOOT
     {
       colorBlink(CRGB::Yellow, -1, -1, 50, 3, CRGB::Yellow, preserved_leds.none);
@@ -37,7 +39,7 @@ void RGBControl()
       colorArmAll(CRGB::Red);
       delay(150);
     }
-    else if (m2h_sysstat > 4) // MAV_STATE_CRITICAL and over
+    else if (m2h_sysstat > 4) // MAV_STATE_CRITICAL and over  
     {
       //colorArmAll(CRGB::Yellow);
       //delay(200);

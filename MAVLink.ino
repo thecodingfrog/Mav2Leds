@@ -1,16 +1,6 @@
 #define MAVLINK_COMM_NUM_BUFFERS 1
 #define MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-// this code was moved from libraries/GCS_MAVLink to allow compile
-// time selection of MAVLink 1.0
-BetterStream	*mavlink_comm_0_port;
-BetterStream	*mavlink_comm_1_port;
-
-mavlink_system_t mavlink_system = {12,1,0,0};
-
-#include "../GCS_MAVLink/include/mavlink/v1.0/mavlink_types.h"
-#include "../GCS_MAVLink/include/mavlink/v1.0/ardupilotmega/mavlink.h" 
-
 static int packet_drops = 0;
 static int parse_error = 0;
 
@@ -22,7 +12,7 @@ void request_mavlink_rates()
   const int maxStreams = 6;
   const uint8_t MAVStreams[maxStreams] = {MAV_DATA_STREAM_RAW_SENSORS,
                                           MAV_DATA_STREAM_RC_CHANNELS,
-					  MAV_DATA_STREAM_POSITION,
+					                                MAV_DATA_STREAM_POSITION,
                                           MAV_DATA_STREAM_ALL, 
                                           MAV_DATA_STREAM_EXTRA1,
                                           MAV_DATA_STREAM_RAW_CONTROLLER};
@@ -39,6 +29,12 @@ void request_mavlink_rates()
 void read_mavlink(){
   mavlink_message_t msg; 
   mavlink_status_t status;
+
+  /*for(int n = 0; n < 3; n++)
+  {
+      request_mavlink_rates();//Three times to certify it will be readed
+      delay(50);
+  }*/
   
   // grabing data 
   while(Serial.available() > 0) { 
@@ -154,13 +150,17 @@ void read_mavlink(){
            throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
         }
         break;
-          
+        
         case MAVLINK_MSG_ID_STATUSTEXT:
-          {   
-           #ifdef SERDB            
+          {
+            //colorBlink(CRGB::Red, -1, -1, 50, 3, CRGB::Red, preserved_leds.none);
+            //severity = mavlink_msg_statustext_get_severity(&msg);
+            //mavlink_msg_statustext_get_text(&msg, severity_text);
+            //checks_ok = (String(severity_text).indexOf("PreArm:") >= 0) ? 0:1;
+           #ifdef SERDB
              DPL(mavlink_msg_statustext_get_severity(&msg));
            #endif
-          }  
+          }
           break;
 // * * * end messages * * *       
        default:
