@@ -84,6 +84,7 @@ static uint8_t hTX=8;              /* if using the JDrones board use 6 & 5 */
 
 int messageCounter;
 static bool mavlink_active;
+BetterStream *mavlink_comm_0_port;
 
 /* **********************************************/
 /* ***************** SETUP() *******************/
