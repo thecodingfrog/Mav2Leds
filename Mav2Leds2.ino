@@ -48,21 +48,14 @@
 
 /* **********************************************/
 /* ***************** INCLUDES *******************/
-#include <FastSerial.h>
+#include <SingleSerial.h> // MUST be first
+#include <SoftwareSerial.h>
 #include <math.h>
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+#include <avr/wdt.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <GCS_MAVLink.h>
-#include <SoftwareSerial.h>
-#include <digitalWriteFast.h>    /* Direct portmanipulation library to replace digitalWrite. This is faster and smaller in code */
-#include <FastLED.h>
-#include <mthread.h>
-#include "Mav2Leds2.h"            /* Configurations */
-#include "MavLinkJobs.h"
-#include "LedController.h"
-
 
 // Get the common arduino functions
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -70,14 +63,16 @@
 #else
   #include "wiring.h"
 #endif
+#include "Mav2Leds.h"
+#include "Strobe.h"
+#include "Strip.h"
+#include "MAVLinkReader.h"
 
 /* *************************************************/
 /* ***************** DEFINITIONS *******************/
 #define TELEMETRY_SPEED  57600    /* MAVLink telemetry speed.*/
-FastSerialPort0(Serial);           /* Our Uart port for Mavlink*/
+SingleSerialPort(Serial);           /* Our Uart port for Mavlink*/
 
-#define DPL dbSerial.println 
-#define DPN dbSerial.print
 
 static uint8_t hRX=7;              /* software serial port for HoTT OR! Debug */
 static uint8_t hTX=8;              /* if using the JDrones board use 6 & 5 */
@@ -86,45 +81,48 @@ static uint8_t hTX=8;              /* if using the JDrones board use 6 & 5 */
   SoftwareSerial dbSerial(hRX,hTX);    /* (rx port,tx port) */
 #endif
 
+#define DPL dbSerial.println 
+#define DPN dbSerial.print
+
 int messageCounter;
-static bool mavlink_active;
+bool mavlink_active;
+BetterStream *mavlink_comm_0_port;
+
+Preserved preserved_leds = { 0, 1, 2, 3 };
+Strobe led1(12, 50, 70, 50, 70, 50, 400);
+//Strip led2(13, 50, 2000);
+
+SysState __SysState;// = { 0, "", 0, 0, 0, 0 };
+MAVLinkReader __MAVLinkReader(__SysState);
 
 /* **********************************************/
 /* ***************** SETUP() *******************/
+
 void setup()
 {
-  
-  
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
   
-  Serial.begin(57600);
   #ifdef SERDB
     dbSerial.begin(57600);
     DPL("Debug Serial ready... ");
     DPL("Output only please.  ");
   #endif
   
-  main_thread_list->add_thread(new MavLinkJobs());
-  main_thread_list->add_thread(new LedController());
+  pinMode(HEARTBEAT_LED_PIN, OUTPUT);
   
-}
-/* * * * * * * * * END of setup() * * * * * * * * */
-
-  
-/* * * * * * * * *  MAIN LOOP * * * * * * * * * * */
-/*void loop()
-{
-  //Run "timer" every 120 miliseconds
-  if(millis() > mavLinkTimer + 100)
+  for(int i = 0; i < 10 ; i++)
   {
-    mavLinkTimer = millis();
-    timerEvent();
+    digitalWrite(HEARTBEAT_LED_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+    delay(100);               // wait for a second
+    digitalWrite(HEARTBEAT_LED_PIN, LOW);    // turn the LED off by making the voltage LOW
+    delay(20);
   }
-  #ifdef SERDB
-    DPL("loop");
-  #endif
-  read_mavlink();
-  //RGBControl();
-}*/
+}
 
+void loop()
+{
+  led1.Update();
+  //led2.Update();
+  __MAVLinkReader.Update();
+}
