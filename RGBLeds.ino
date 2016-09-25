@@ -4,6 +4,8 @@
  *
  * LED patterns are hard coded to the flightstatus number but use your imagination to write your own patterns 
  */
+String old_mode_str = "";
+int __count = 0;
 
 
 void RGBInitialize()
@@ -17,6 +19,27 @@ void RGBInitialize()
 
 void RGBControl()
 {
+  /*__count++;
+  if (__count < 20)
+  {
+    mode_str = "phld";
+  }
+  else
+  {
+    mode_str = "loit";
+    if (__count > 40) __count = 0;
+  }
+  isArmed = 1;
+  m2h_fix_type = 2;*/
+
+  //m2h_fix_type = 2;
+  
+  if (mode_str != old_mode_str) // RESET all leds on mode change
+  {
+    colorArm(CRGB::Green, 0, 1);
+    colorArm(CRGB::Red, 2, 3);
+    old_mode_str = mode_str;
+  }
   
   if ( (m2h_vbat_A / m2h_num_cells) <= (LOW_BATT_2 * 10) )
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
