@@ -1,7 +1,6 @@
 class Strobe
 {
   private:
-    int __ledPin;      // the number of the LED pin
     long OnTime;     // milliseconds of on-time
     long OffTime;    // milliseconds of off-time
     long OnTime2;     // milliseconds of on-time
@@ -13,8 +12,13 @@ class Strobe
     int ledState;                 // ledState used to set the LED
     int stateIdx;
     long previousMillis;   // will store last time LED was updated
+    CRGB* __obj;
+    int __led_idx;
+    void Show();
+    void Hide();
     
   public:
-    Strobe(int pin, long on, long off, long on2, long off2, long on3, long off3);
+    Strobe(long on, long off, long on2, long off2, long on3, long off3);
+    void Attach(CRGB* __leds, int idx);
     void Update();
 };

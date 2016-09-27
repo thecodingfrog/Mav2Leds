@@ -2,7 +2,14 @@
 #ifndef MAV2LEDS_H
 #define MAV2LEDS_H
 
+#define FR  5    // Rear right    port D5
+#define RR  9    // Front right   port D9
+#define FL  6    // Front left    port D6
+#define RL  10    // Rear left     port D10
+#define CLK  11    // Clock port
 #define HEARTBEAT_LED_PIN 13     // Heartbeat LED if any
+#define NUM_STRIPS 3
+#define NUM_LEDS_PER_STRIP 8
 
 typedef struct
 {

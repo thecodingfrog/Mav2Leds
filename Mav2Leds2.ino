@@ -50,6 +50,7 @@
 /* ***************** INCLUDES *******************/
 #include <SingleSerial.h> // MUST be first
 #include <SoftwareSerial.h>
+#include <FastLED.h>
 #include <math.h>
 #include <inttypes.h>
 #include <avr/pgmspace.h>
@@ -89,9 +90,13 @@ bool mavlink_active;
 BetterStream *mavlink_comm_0_port;
 
 Preserved preserved_leds = { 0, 1, 2, 3 };
-Strobe led1(12, 50, 70, 50, 70, 50, 400);
-//Strip led2(13, 50, 2000);
 
+CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
+
+
+//Strip led2(13, 50, 2000);
+Strobe strobe_led(50, 70, 50, 70, 50, 600);
+Strobe strobe_led2(50, 70, 50, 600, 50, 70);
 SysState __SysState;// = { 0, "", 0, 0, 0, 0 };
 MAVLinkReader __MAVLinkReader(__SysState);
 
@@ -100,6 +105,13 @@ MAVLinkReader __MAVLinkReader(__SysState);
 
 void setup()
 {
+  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
+  //FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
+  //FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
+  //FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[3], NUM_LEDS_PER_STRIP);
+  strobe_led.Attach(leds[0], 6);
+  strobe_led2.Attach(leds[0], 7);
+
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
   
@@ -118,11 +130,16 @@ void setup()
     digitalWrite(HEARTBEAT_LED_PIN, LOW);    // turn the LED off by making the voltage LOW
     delay(20);
   }
+
+  
+  //fill_solid(leds[0], NUM_LEDS_PER_STRIP, CRGB::Blue);
+  //FastLED.show();
 }
 
 void loop()
 {
-  led1.Update();
+  strobe_led.Update();
+  strobe_led2.Update();
   //led2.Update();
   __MAVLinkReader.Update();
 }
