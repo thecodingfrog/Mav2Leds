@@ -29,4 +29,12 @@ typedef struct
   byte both;
 } Preserved;
 
+typedef struct
+{
+  byte on;
+  byte blink;
+  byte chase;
+  byte chaseback;
+} LedMode;
+
 #endif
