@@ -12,10 +12,10 @@ class Strobe
     int ledState;                 // ledState used to set the LED
     int stateIdx;
     long previousMillis;   // will store last time LED was updated
-    CRGB* __leds1;
-    CRGB* __leds2;
-    CRGB* __leds3;
-    CRGB* __leds4;
+    CRGB* __FR_leds;
+    CRGB* __FL_leds;
+    CRGB* __RR_leds;
+    CRGB* __RL_leds;
     int __led_idx;
     void Show();
     void Hide();

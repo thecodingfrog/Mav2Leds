@@ -49,14 +49,6 @@
 /* **********************************************/
 /* ***************** INCLUDES *******************/
 #include <SingleSerial.h> // MUST be first
-#include <SoftwareSerial.h>
-#include <FastLED.h>
-#include <math.h>
-#include <inttypes.h>
-#include <avr/pgmspace.h>
-#include <avr/wdt.h>
-#include <avr/io.h>
-#include <avr/interrupt.h>
 
 // Get the common arduino functions
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -65,6 +57,7 @@
   #include "wiring.h"
 #endif
 #include "Mav2Leds.h"
+#include <FastLED.h>
 #include "Strobe.h"
 #include "Strip.h"
 #include "MAVLinkReader.h"
@@ -74,73 +67,58 @@
 #define TELEMETRY_SPEED  57600    /* MAVLink telemetry speed.*/
 SingleSerialPort(Serial);           /* Our Uart port for Mavlink*/
 
-
-static uint8_t hRX=7;              /* software serial port for HoTT OR! Debug */
-static uint8_t hTX=8;              /* if using the JDrones board use 6 & 5 */
-
-#ifdef SERDB
-  SoftwareSerial dbSerial(hRX,hTX);    /* (rx port,tx port) */
-#endif
-
-#define DPL dbSerial.println 
-#define DPN dbSerial.print
-
 int messageCounter;
 bool mavlink_active;
 BetterStream *mavlink_comm_0_port;
 
-Preserved preserved_leds = { 0, 1, 2, 3 };
-
-CRGB leds[NUM_STRIPS][NUM_LEDS_PER_STRIP];
-
-
-Strip strip_leds;
-Strobe strobe_led(50, 70, 50, 70, 50, 600);
-Strobe strobe_led2(50, 70, 50, 600, 50, 70);
 SysState __SysState;// = { 0, "", 0, 0, 0, 0 };
+Position __position = { 0, 1 };
 MAVLinkReader __MAVLinkReader(__SysState);
 
-/* **********************************************/
-/* ***************** SETUP() *******************/
+Strobe strobe_led(50, 70, 50, 70, 50, 600);
+Strobe strobe_led2(50, 70, 50, 600, 50, 70);
+Strip strip_led_front;
+Strip strip_led_rear;
+
+CRGB __leds_FR[8];
+CRGB __leds_FL[8];
+CRGB __leds_RR[8];
+CRGB __leds_RL[8];
 
 void setup()
 {
-  FastLED.addLeds<LPD8806, FR, CLK, BRG>(leds[0], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, FL, CLK, BRG>(leds[1], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RR, CLK, BRG>(leds[2], NUM_LEDS_PER_STRIP);
-  FastLED.addLeds<LPD8806, RL, CLK, BRG>(leds[3], NUM_LEDS_PER_STRIP);
-  strobe_led.Attach(leds[0], leds[1], leds[2], leds[3], 6);
-  strobe_led2.Attach(leds[0], leds[1], leds[2], leds[3], 7);
-  strip_leds.Attach(leds[0], leds[1], leds[2], leds[3]);
+  FastLED.addLeds<NEOPIXEL, 5>(__leds_FR, 8);
+  FastLED.addLeds<NEOPIXEL, 6>(__leds_FL, 8);
+  FastLED.addLeds<NEOPIXEL, 7>(__leds_RR, 8);
+  FastLED.addLeds<NEOPIXEL, 8>(__leds_RL, 8);
+  strobe_led.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 6);
+  strobe_led2.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 7);
+  strip_led_front.Attach(__leds_FR, __leds_FL, __position.front);
+  strip_led_rear.Attach(__leds_RR, __leds_RL, __position.rear);
 
   Serial.begin(TELEMETRY_SPEED);          /* Initialize Serial port, speed */
   mavlink_comm_0_port = &Serial;          /* setup mavlink port */
-  
-  #ifdef SERDB
-    dbSerial.begin(57600);
-    DPL("Debug Serial ready... ");
-    DPL("Output only please.  ");
-  #endif
-  
-  pinMode(HEARTBEAT_LED_PIN, OUTPUT);
-  
-  for(int i = 0; i < 10 ; i++)
+  /*for (int j = 5; j > -1; j--)
   {
-    digitalWrite(HEARTBEAT_LED_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(100);               // wait for a second
-    digitalWrite(HEARTBEAT_LED_PIN, LOW);    // turn the LED off by making the voltage LOW
-    delay(20);
-  }
-
-  
-  //fill_solid(leds[0], NUM_LEDS_PER_STRIP, CRGB::Blue);
-  //FastLED.show();
+    __leds_FR[j] = CRGB::Blue;
+    __leds_FR[j].fadeToBlackBy((5 - j) * 51);
+    FastLED.show();
+  }*/
 }
 
 void loop()
 {
   strobe_led.Update();
   strobe_led2.Update();
-  strip_leds.Update(__SysState);
+  strip_led_front.Update(__SysState);
+  strip_led_rear.Update(__SysState);
   __MAVLinkReader.Update();
+  /*fill_solid(leds_front, 8, CRGB::Green);
+  fill_solid(leds_rear, 8, CRGB::Red);
+  FastLED.show();
+  delay(500);
+  fill_solid(leds_front, 8, CRGB::Black);
+  fill_solid(leds_rear, 8, CRGB::Black);
+  FastLED.show();
+  delay(500);*/
 }

@@ -39,4 +39,10 @@ typedef struct
   byte chaseback;
 } LedMode;
 
+typedef struct
+{
+  byte front;
+  byte rear;
+} Position;
+
 #endif

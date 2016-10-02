@@ -18,10 +18,10 @@ Strobe::Strobe(long on, long off, long on2, long off2, long on3, long off3)
 
 void Strobe::Attach(CRGB* leds1, CRGB* leds2, CRGB* leds3, CRGB* leds4, int __idx)
 {
-  __leds1 = leds1;
-  __leds2 = leds2;
-  __leds3 = leds3;
-  __leds4 = leds4;
+  __FR_leds = leds1;
+  __FL_leds = leds2;
+  __RR_leds = leds3;
+  __RL_leds = leds4;
   __led_idx = __idx;
   //fill_solid(__obj, 8, CRGB::Blue);
   //FastLED.show();
@@ -79,19 +79,19 @@ void Strobe::Update()
 
 void Strobe::Show()
 {
-  __leds1[__led_idx] = CRGB::Green;
-  __leds2[__led_idx] = CRGB::Green;
-  __leds3[__led_idx] = CRGB::Green;
-  __leds4[__led_idx] = CRGB::Green;
+  __FR_leds[__led_idx] = CRGB::Green;
+  __FL_leds[__led_idx] = CRGB::Green;
+  __RR_leds[__led_idx] = CRGB::Red;
+  __RL_leds[__led_idx] = CRGB::Red;
   FastLED.show();
 }
 
 void Strobe::Hide()
 {
-  __leds1[__led_idx] = CRGB::Black;
-  __leds2[__led_idx] = CRGB::Black;
-  __leds3[__led_idx] = CRGB::Black;
-  __leds4[__led_idx] = CRGB::Black;
+  __FR_leds[__led_idx] = CRGB::Black;
+  __FL_leds[__led_idx] = CRGB::Black;
+  __RR_leds[__led_idx] = CRGB::Black;
+  __RL_leds[__led_idx] = CRGB::Black;
   FastLED.show();
 }
 
