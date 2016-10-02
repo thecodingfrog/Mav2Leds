@@ -10,6 +10,7 @@
 #define HEARTBEAT_LED_PIN 13     // Heartbeat LED if any
 #define NUM_STRIPS 3
 #define NUM_LEDS_PER_STRIP 8
+#define LOW_BATT_2 3.3
 
 typedef struct
 {
@@ -19,6 +20,7 @@ typedef struct
   float battery;
   byte isArmed;
   uint8_t system_state;
+  int num_cells;
 } SysState;
 
 typedef struct

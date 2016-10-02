@@ -112,6 +112,7 @@ void MAVLinkReader::CheckBattery()
       if ((__vbat_A > 100) && (__vbat_A <127)) __num_cells = 3;
       if ((__vbat_A > 130) && (__vbat_A <169)) __num_cells = 4;
       if ((__vbat_A > 170) && (__vbat_A <220)) __num_cells = 5;
+      __obj.num_cells = __num_cells;
     }
   }
   if ((__vbat_set) && (__vbat_A > 100))

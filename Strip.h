@@ -4,17 +4,29 @@ class Strip
 {
   private:
     int ledState;                 // ledState used to set the LED
-    unsigned long OnTime = 50;     // milliseconds of on-time
+    unsigned long OnTime = 200;     // milliseconds of on-time
     unsigned long OffTime = 50;    // milliseconds of off-time
     unsigned long previousMillis;   // will store last time LED was updated
     CRGB* __leds1;
     CRGB* __leds2;
     CRGB* __leds3;
     CRGB* __leds4;
-    int __inc = 0;
-    int __dec = 5;
+    LedMode __led_mode = {0, 1, 2, 3};
+    byte __front_leds_mode;
+    CRGB __front_leds_color;
+    byte __rear_leds_mode;
+    CRGB __rear_leds_color;
+    SysState __sys_state;
+    
+    void ParseMode();
     void Show();
     void Hide();
+    void ChaseFront(CRGB __color);
+    void ChaseRear(CRGB __color);
+    
+  protected:
+    int __inc = 0;
+    int __dec = 5;
     
   public:
     Strip();
