@@ -87,10 +87,10 @@ CRGB __leds_RL[8];
 
 void setup()
 {
-  FastLED.addLeds<NEOPIXEL, 5>(__leds_FR, 8);
-  FastLED.addLeds<NEOPIXEL, 6>(__leds_FL, 8);
-  FastLED.addLeds<NEOPIXEL, 7>(__leds_RR, 8);
-  FastLED.addLeds<NEOPIXEL, 8>(__leds_RL, 8);
+  FastLED.addLeds<LPD8806, FR, CLK, BRG>(__leds_FR, 8);
+  FastLED.addLeds<LPD8806, FL, CLK, BRG>(__leds_FL, 8);
+  FastLED.addLeds<LPD8806, RR, CLK, BRG>(__leds_RR, 8);
+  FastLED.addLeds<LPD8806, RL, CLK, BRG>(__leds_RL, 8);
   strobe_led.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 6);
   strobe_led2.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 7);
   strip_led_front.Attach(__leds_FR, __leds_FL, __position.front);
@@ -113,6 +113,7 @@ void loop()
   strip_led_front.Update(__SysState);
   strip_led_rear.Update(__SysState);
   __MAVLinkReader.Update();
+  __MAVLinkReader.Read();
   /*fill_solid(leds_front, 8, CRGB::Green);
   fill_solid(leds_rear, 8, CRGB::Red);
   FastLED.show();

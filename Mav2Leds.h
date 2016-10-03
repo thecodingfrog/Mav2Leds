@@ -2,10 +2,10 @@
 #ifndef MAV2LEDS_H
 #define MAV2LEDS_H
 
-#define FR  5    // Rear right    port D5
-#define RR  9    // Front right   port D9
-#define FL  6    // Front left    port D6
-#define RL  10    // Rear left     port D10
+#define FR  9    // Rear right    port D9
+#define RR  5    // Front right   port D5
+#define FL  10    // Front left    port D10
+#define RL  6    // Rear left     port D6
 #define CLK  11    // Clock port
 #define HEARTBEAT_LED_PIN 13     // Heartbeat LED if any
 #define NUM_STRIPS 3
