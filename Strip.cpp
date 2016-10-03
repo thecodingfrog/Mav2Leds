@@ -24,6 +24,7 @@ void Strip::Attach(CRGB* leds1, CRGB* leds2, byte pos)
 
 void Strip::Update(SysState __sys_state)
 {
+  __obj = __sys_state;
   // check to see if it's time to change the state of the LED
   unsigned long currentMillis = millis();
    
@@ -54,33 +55,33 @@ void Strip::ParseMode()
   ++__cycle;
   if (__cycle > 12) __cycle = 0;
   
-  if ( (__sys_state.battery / __sys_state.num_cells) <= (LOW_BATT_2 * 10) )
+  if ((__obj.battery / __obj.num_cells) <= (LOW_BATT_2 * 10))
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
     __leds_mode = __led_mode.blink;
     __leds_color = CRGB::OrangeRed;
   }
   else
   {
-    if (__sys_state.system_state > 0 && __sys_state.system_state < 2) // MAV_STATE_BOOT
+    if (__obj.system_state < 2) // MAV_STATE_BOOT
     {
       __leds_mode = __led_mode.blink;
       __leds_color = CRGB::Yellow;
     }
-    else if (__sys_state.system_state == 2) // MAV_STATE_CALIBRATING
+    else if (__obj.system_state == 2) // MAV_STATE_CALIBRATING
     {
       __leds_mode = __led_mode.on;
       __leds_color = (__odd) ? CRGB::Blue : CRGB::Red;
     }
-    else if (__sys_state.system_state > 4) // MAV_STATE_CRITICAL and over  
+    else if (__obj.system_state > 4) // MAV_STATE_CRITICAL and over  
     {
       __leds_mode = __led_mode.blink;
       __leds_color = CRGB::Yellow;
     }
-    else if (__sys_state.system_state > 2 && __sys_state.system_state < 5) //   MAV_STATE_STANDBY and MAV_STATE_ACTIVE  
+    else if (__obj.system_state > 2 && __obj.system_state < 5) //   MAV_STATE_STANDBY and MAV_STATE_ACTIVE  
     {
-      if (__sys_state.isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
+      if (__obj.isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
       {
-        if (__sys_state.gps_fix_type == 3) // 3D Fix
+        if (__obj.gps_fix_type == 3) // 3D Fix
         {
           __leds_mode = __led_mode.blink;
           __leds_color = CRGB::Green;
@@ -91,10 +92,10 @@ void Strip::ParseMode()
           __leds_color = CRGB::Blue;
         }
       }
-      else if (__sys_state.flight_mode_str == "stab" && __sys_state.isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
+      else if (__obj.flight_mode_str == "stab" && __obj.isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
       {
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.chase;
-        if (__sys_state.gps_fix_type == 3) // 3D Fix
+        if (__obj.gps_fix_type == 3) // 3D Fix
         {
           __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
         }
@@ -103,10 +104,10 @@ void Strip::ParseMode()
           __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
         }    
       }
-      else if (__sys_state.flight_mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
+      else if (__obj.flight_mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
       {
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.blink;
-        if (__sys_state.gps_fix_type == 3) // 3D Fix
+        if (__obj.gps_fix_type == 3) // 3D Fix
         {
           __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
         }
@@ -115,10 +116,10 @@ void Strip::ParseMode()
           __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
         }
       }
-      else if (__sys_state.flight_mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
+      else if (__obj.flight_mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
       {
         __leds_mode = __led_mode.blink;
-        if (__sys_state.gps_fix_type == 3) // 3D Fix
+        if (__obj.gps_fix_type == 3) // 3D Fix
         {
           __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
         }
@@ -127,27 +128,27 @@ void Strip::ParseMode()
           __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
         }
       }
-      else if (__sys_state.flight_mode_str == "loit") // LOITER
+      else if (__obj.flight_mode_str == "loit") // LOITER
       {
         __leds_mode = __led_mode.chaseback;
         __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
       }
-      else if (__sys_state.flight_mode_str == "land") // LAND
+      else if (__obj.flight_mode_str == "land") // LAND
       {
         __leds_mode = __led_mode.chase;
         __leds_color = CRGB::Purple;
       }
-      else if (__sys_state.flight_mode_str == "rtl") // RTL
+      else if (__obj.flight_mode_str == "rtl") // RTL
       {
         __leds_mode = __led_mode.chase;
         __leds_color = (__cycle > 6) ? CRGB::Green : CRGB::Purple;
       }
-      else if (__sys_state.flight_mode_str == "auto") // AUTO
+      else if (__obj.flight_mode_str == "auto") // AUTO
       {
         __leds_mode = (__pos == __position.front) ? __led_mode.chase : __led_mode.chaseback;
         __leds_color = CRGB::Green;
       }
-      else if (__sys_state.flight_mode_str == "tune") // AUTOTUNE
+      else if (__obj.flight_mode_str == "tune") // AUTOTUNE
       {
         __leds_mode = __led_mode.blink;
         __leds_color = CRGB::Cyan;

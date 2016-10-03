@@ -53,8 +53,10 @@ class MAVLinkReader
     void CheckFlightMode();
     byte isBit(byte param, byte bitfield);
     
+    SysState __obj;
+    
   public:
-    MAVLinkReader(SysState& __SysState);
+    MAVLinkReader();
     void Update();
-    void Read();
+    SysState Read();
 };

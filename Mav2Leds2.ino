@@ -41,11 +41,6 @@
 #undef PSTR 
 #define PSTR(s) (__extension__({static prog_char __c[] PROGMEM = (s); &__c[0];})) 
 
-#define MAVLINK10     // Are we listening MAVLink 1.0 or 0.9   (0.9 is obsolete now)
-#define HEARTBEAT     // HeartBeat signal
-//#define SERDB         // Output debug mavlink information to SoftwareSerial, cannot be used with HoTT output at the same time!
-//#define DEBUGLED 12   // HottLoop debugLed
-
 /* **********************************************/
 /* ***************** INCLUDES *******************/
 #include <SingleSerial.h> // MUST be first
@@ -71,9 +66,9 @@ int messageCounter;
 bool mavlink_active;
 BetterStream *mavlink_comm_0_port;
 
-SysState __SysState = { -1, "", 0, 0, 0, 0 };
+SysState __SysState = { 0, "", 0, 0, -1, 0 };
 Position __position = { 0, 1 };
-MAVLinkReader __MAVLinkReader(__SysState);
+MAVLinkReader __MAVLinkReader;
 
 Strobe strobe_led(50, 70, 50, 70, 50, 600);
 Strobe strobe_led2(50, 70, 50, 600, 50, 70);
@@ -87,10 +82,10 @@ CRGB __leds_RL[8];
 
 void setup()
 {
-  FastLED.addLeds<NEOPIXEL, 5>(__leds_FR, 8);
-  FastLED.addLeds<NEOPIXEL, 6>(__leds_FL, 8);
-  FastLED.addLeds<NEOPIXEL, 7>(__leds_RR, 8);
-  FastLED.addLeds<NEOPIXEL, 8>(__leds_RL, 8);
+  FastLED.addLeds<LPD8806, FR, CLK, BRG>(__leds_FR, 8);
+  FastLED.addLeds<LPD8806, FL, CLK, BRG>(__leds_FL, 8);
+  FastLED.addLeds<LPD8806, RR, CLK, BRG>(__leds_RR, 8);
+  FastLED.addLeds<LPD8806, RL, CLK, BRG>(__leds_RL, 8);
   strobe_led.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 6);
   strobe_led2.Attach(__leds_FR, __leds_FL, __leds_RR, __leds_RL, 7);
   strip_led_front.Attach(__leds_FR, __leds_FL, __position.front);
@@ -108,11 +103,14 @@ void setup()
 
 void loop()
 {
+  __MAVLinkReader.Update();
+  __SysState = __MAVLinkReader.Read();
+  
   strobe_led.Update();
   strobe_led2.Update();
+  
   strip_led_front.Update(__SysState);
   strip_led_rear.Update(__SysState);
-  __MAVLinkReader.Update();
   /*fill_solid(leds_front, 8, CRGB::Green);
   fill_solid(leds_rear, 8, CRGB::Red);
   FastLED.show();

@@ -19,11 +19,8 @@
 #define LAND 21
 #define TAKEOFF 22
 
-SysState __obj;
-
-MAVLinkReader::MAVLinkReader(SysState& __sys_state)
+MAVLinkReader::MAVLinkReader()
 {
-  __obj = __sys_state;
   previousMillis = 0;
 }
 
@@ -47,7 +44,6 @@ void MAVLinkReader::Update()
     /* do the LED stuff 
      * RGB controller LEDstrip or directly attached LEDs */
     HeartBeat();
-    //RGBControl();
   
     /* end 10Hz calls */
   
@@ -67,19 +63,9 @@ void MAVLinkReader::Update()
 
 void MAVLinkReader::HeartBeat()
 {
-  
   #ifdef HEARTBEAT
-    if (__mavlink_active) digitalWrite(HEARTBEAT_LED_PIN, __ioCounter == 1 ? HIGH : LOW);  /* only HB is mavlink is active */
+    if (__mavlink_active) digitalWrite(HEARTBEAT_LED_PIN, __ioCounter == 1 ? HIGH : LOW);  /* only HB if mavlink is active */
     __messageCounter++;
-    /* Mavlink on HoTT display heartbeat */
-    if ((__ioCounter == 1) && (__mavlink_active))
-    {
-      mavlinkHB_char = char('+');      /* '+' to indicate mavlink received heart beat */
-    }
-    else
-    {
-      mavlinkHB_char = 0;
-    }
   #endif
 
   /* check if Mavlink is lost */
@@ -125,7 +111,7 @@ void MAVLinkReader::CheckBattery()
   }
 }
 
-void MAVLinkReader::Read()
+SysState MAVLinkReader::Read()
 {
   mavlink_message_t msg;
   mavlink_status_t status;
@@ -186,7 +172,6 @@ void MAVLinkReader::Read()
               __isArmed = 0;
               __isArmedOld = 0;
             }
-            __obj.battery = __isArmed;
             __obj.system_state = __sys_state;
 
 #ifdef SERDB            
@@ -277,7 +262,9 @@ void MAVLinkReader::Read()
   }
   // Update global packet drops counter
   packet_drops += status.packet_rx_drop_count;
-  parse_error += status.parse_error;  
+  parse_error += status.parse_error;
+
+   return __obj;
 }
 
 void MAVLinkReader::CheckFlightMode()

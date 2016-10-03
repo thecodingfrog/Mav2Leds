@@ -14,7 +14,7 @@ class Strip
     CRGB* __leds2;
     int __led_idx;
     int __inv_led_idx;
-    SysState __sys_state;
+    SysState __obj;
     byte __leds_mode;
     CRGB __leds_color;
     LedMode __led_mode = {0, 1, 2, 3};
