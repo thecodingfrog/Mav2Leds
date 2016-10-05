@@ -17,11 +17,14 @@ class Strip
     SysState __obj;
     byte __leds_mode;
     CRGB __leds_color;
-    LedMode __led_mode = {0, 1, 2, 3};
+    LedMode __led_mode = {0, 1, 2, 3, 4, 5};
     Position __position;
     byte __pos;
     bool __odd = false;
-    int __cycle = 0;
+    int __cycle6 = 0;
+    int __cycle12 = 0;
+    int __cycle24 = 0;
+    int __steps = 255/12;
     
     void ParseMode();
     void Show();
