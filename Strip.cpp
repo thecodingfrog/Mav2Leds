@@ -7,6 +7,7 @@ Strip::Strip()
   timer1 = 50;
   timer2 = 50;
   timer3 = 50;
+  timer4 = 50;
   
   stateIdx = 1;
   previousMillis = 0;  
@@ -33,19 +34,25 @@ void Strip::Update(SysState __sys_state)
     stateIdx = 2;
     previousMillis = currentMillis;   // Remember the time
     ParseMode();
-    Show();
+    Step1();
   }
   else if((stateIdx == 2) && (currentMillis - previousMillis >= timer2))
   {
     stateIdx = 3;
     previousMillis = currentMillis;  // Remember the time
-    Fade();
+    Step2();
   }
   else if ((stateIdx == 3) && (currentMillis - previousMillis >= timer3))
   {
+    stateIdx = 4;
+    previousMillis = currentMillis;   // Remember the time
+    Step3();
+  }
+  else if ((stateIdx == 4) && (currentMillis - previousMillis >= timer4))
+  {
     stateIdx = 1;
     previousMillis = currentMillis;   // Remember the time
-    Hide();
+    Step4();
   }
 }
 
@@ -54,29 +61,40 @@ void Strip::ParseMode()
   __odd = !__odd;
 
   ++__cycle6;
-  if (__cycle6 > 6) __cycle6 = 0;
+  if (__cycle6 > 6)
+  {
+    __cycle6 = 0;
+  }
   
   ++__cycle12;
-  if (__cycle12 > 12) __cycle12 = 0;
+  if (__cycle12 > 12)
+  {
+    __bounceback = !__bounceback;
+    __cycle12 = 0;
+  }
   
   ++__cycle24;
-  if (__cycle24 > 24) __cycle24 = 0;
+  if (__cycle24 > 24)
+  {
+    //__bounceback = false;
+    __cycle24 = 0;
+  }
   
   if ((__obj.battery / __obj.num_cells) <= (LOW_BATT_2 * 10))
   {    // low battery detected, for front led color change, in this case bright white = full batt, orange is batt warning..
-    __leds_mode = __led_mode.blink;
+    __leds_mode = __led_mode.chain;
     __leds_color = CRGB::OrangeRed;
   }
   else
   {
     if (__obj.system_state < 2) // MAV_STATE_BOOT
     {
-      __leds_mode = __led_mode.chain;
+      __leds_mode = __led_mode.blink;
       __leds_color = CRGB::Yellow;
     }
     else if (__obj.system_state == 2) // MAV_STATE_CALIBRATING
     {
-      __leds_mode = __led_mode.on;
+      __leds_mode = __led_mode.blink;
       __leds_color = (__odd) ? CRGB::Blue : CRGB::Red;
     }
     else if (__obj.system_state > 4) // MAV_STATE_CRITICAL and over  
@@ -90,12 +108,12 @@ void Strip::ParseMode()
       {
         if (__obj.gps_fix_type == 3) // 3D Fix
         {
-          __leds_mode = __led_mode.blink;
+          __leds_mode = __led_mode.pulse;
           __leds_color = CRGB::Green;
         }        
         else
         {
-          __leds_mode = __led_mode.blink;
+          __leds_mode = __led_mode.pulse;
           __leds_color = CRGB::Blue;
         }
       }
@@ -137,18 +155,18 @@ void Strip::ParseMode()
       }
       else if (__obj.flight_mode_str == "loit") // LOITER
       {
-        __leds_mode = __led_mode.chaseback;
+        __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.on;
         __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
       }
       else if (__obj.flight_mode_str == "land") // LAND
       {
-        __leds_mode = __led_mode.chase;
+        __leds_mode = __led_mode.bounce;
         __leds_color = CRGB::Purple;
       }
       else if (__obj.flight_mode_str == "rtl") // RTL
       {
-        __leds_mode = __led_mode.chase;
-        __leds_color = (__cycle12 > 6) ? CRGB::Green : CRGB::Purple;
+        __leds_mode = __led_mode.bounce;
+        __leds_color = (!__bounceback) ? CRGB::Green : CRGB::Purple;
       }
       else if (__obj.flight_mode_str == "auto") // AUTO
       {
@@ -170,41 +188,72 @@ void Strip::ParseMode()
 
   if (__leds_mode == __led_mode.blink)
   {
-    timer1 = 200;
-    timer2 = 50;
-    timer3 = 50;
+    timer1 = 600;
+    timer2 = 70;
+    timer3 = 70;
+    timer4 = 70;
   }
   else if (__leds_mode == __led_mode.pulse)
   {
     timer1 = 50;
     timer2 = 10;
     timer3 = 10;
+    timer4 = 10;
   }
   else if (__leds_mode == __led_mode.chain)
   {
     timer1 = 200;
     timer2 = 10;
     timer3 = 200;
+    timer4 = 10;
+  }
+  else if (__leds_mode == __led_mode.chase || __leds_mode == __led_mode.chaseback)
+  {
+    timer1 = 50;
+    timer2 = 10;
+    timer3 = 10;
+    timer4 = 10;
+  }
+  else if (__leds_mode == __led_mode.bounce)
+  {
+    timer1 = 50;
+    timer2 = 10;
+    timer3 = 10;
+    timer4 = 10;
   }
   else
   {
     timer1 = 50;
     timer2 = 50;
     timer3 = 50;
+    timer4 = 10;
   }
 }
 
-void Strip::Show()
+void Strip::Step1()
 {
   if (__leds_mode == __led_mode.chase)
   {
-    __leds1[__led_idx] = __leds_color;
-    __leds2[__led_idx] = __leds_color;
+    for (int idx = 0; idx < 6; idx++)
+    {
+      if (__cycle12 - idx >= 0 && __cycle12 - idx <= 5)
+      {
+        __leds1[__cycle12 - idx] = __leds_color;
+        __leds1[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
+      }
+    }
   }
   if (__leds_mode == __led_mode.chaseback)
   {
-    __leds1[__inv_led_idx] = __leds_color;
-    __leds2[__inv_led_idx] = __leds_color;
+    __inv_cycle12 = 6 - __cycle12;
+    for (int idx = 0; idx < 6; idx++)
+    {
+      if (__inv_cycle12 + idx >= 0 && __inv_cycle12 + idx <= 5)
+      {
+        __leds1[__inv_cycle12 + idx] = __leds_color;
+        __leds1[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
+      }
+    }
   }
   if (__leds_mode == __led_mode.on || __leds_mode == __led_mode.blink)
   {
@@ -217,6 +266,29 @@ void Strip::Show()
     {
       __leds1[i] = (i % 2) ? __leds_color : CRGB::Black;
       __leds2[i] = (i % 2) ? __leds_color : CRGB::Black;
+    }
+  }
+  if (__leds_mode == __led_mode.bounce && !__bounceback)
+  {
+    for (int idx = 0; idx < 6; idx++)
+    {
+      if (__cycle12 - idx >= 0 && __cycle12 - idx <= 5)
+      {
+        __leds1[__cycle12 - idx] = __leds_color;
+        __leds1[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
+      }
+    }
+  }
+  if (__leds_mode == __led_mode.bounce && __bounceback)
+  {
+    __inv_cycle12 = 6 - __cycle12;
+    for (int idx = 0; idx < 6; idx++)
+    {
+      if (__inv_cycle12 + idx >= 0 && __inv_cycle12 + idx <= 5)
+      {
+        __leds1[__inv_cycle12 + idx] = __leds_color;
+        __leds1[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
+      }
     }
   }
   if (__leds_mode == __led_mode.pulse)
@@ -243,40 +315,22 @@ void Strip::Show()
   FastLED.show();
 }
 
-void Strip::Fade()
+void Strip::Step2()
 {
-  if (__leds_mode == __led_mode.chase)
-  {
-    __leds1[__led_idx].fadeToBlackBy(230);
-    __leds2[__led_idx].fadeToBlackBy(230);
-  }
-  if (__leds_mode == __led_mode.chaseback)
-  {
-    __leds1[__inv_led_idx].fadeToBlackBy(230);
-    __leds2[__inv_led_idx].fadeToBlackBy(230);
-  }
-  FastLED.show();
-}
-
-void Strip::Hide()
-{
-  int __previous = GetPrevious(1);
-  int __inv_previous = 5 - __previous;
-  
-  if (__leds_mode == __led_mode.chase)
-  {
-    __leds1[__previous] = CRGB::Black;
-    __leds2[__previous] = CRGB::Black;
-  }
-  if (__leds_mode == __led_mode.chaseback)
-  {
-    __leds1[__inv_previous] = CRGB::Black;
-    __leds2[__inv_previous] = CRGB::Black;
-  }
   if (__leds_mode == __led_mode.blink)
   {
     fill_solid(__leds1, 6, CRGB::Black);
     fill_solid(__leds2, 6, CRGB::Black);
+  }
+  FastLED.show();
+}
+
+void Strip::Step3()
+{
+  if (__leds_mode == __led_mode.blink)
+  {
+    fill_solid(__leds1, 6, __leds_color);
+    fill_solid(__leds2, 6, __leds_color);
   }
   if (__leds_mode == __led_mode.chain)
   {
@@ -285,6 +339,16 @@ void Strip::Hide()
       __leds1[i] = (i % 2) ? CRGB::Black : __leds_color;
       __leds2[i] = (i % 2) ? CRGB::Black : __leds_color;
     }
+  }
+  FastLED.show();
+}
+
+void Strip::Step4()
+{
+  if (__leds_mode == __led_mode.blink)
+  {
+    fill_solid(__leds1, 6, CRGB::Black);
+    fill_solid(__leds2, 6, CRGB::Black);
   }
   FastLED.show();
 
