@@ -44,6 +44,7 @@ typedef struct
   byte chaseback;
   byte pulse;
   byte chain;
+  byte bounce; //NOT WORKING YET
 } LedMode;
 
 typedef struct
