@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include <FastLED.h>
+#include "SysState.h"
 #include "Strip.h"
 
 Strip::Strip()
@@ -104,7 +105,7 @@ void Strip::ParseMode()
     }
     else if (__obj.system_state > 2 && __obj.system_state < 5) //   MAV_STATE_STANDBY and MAV_STATE_ACTIVE  
     {
-      if (__obj.isArmed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
+      if (__obj.is_armed == 0) // disarmed: led chasing, if GPS 3D lock white color, if not 3D lock orange
       {
         if (__obj.gps_fix_type == 3) // 3D Fix
         {
@@ -117,7 +118,7 @@ void Strip::ParseMode()
           __leds_color = CRGB::Blue;
         }
       }
-      else if (__obj.flight_mode_str == "stab" && __obj.isArmed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
+      else if (__obj.flight_mode_str == "stab" && __obj.is_armed == 1) // armed & manual flight: front leds white with increasing intensity, but if lowbatt is detected, it changes to orange
       {
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.chase;
         if (__obj.gps_fix_type == 3) // 3D Fix

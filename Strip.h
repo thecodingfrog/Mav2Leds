@@ -39,5 +39,5 @@ class Strip
   public:
     Strip();
     void Attach(CRGB* leds1, CRGB* leds2, byte pos);
-    void Update(SysState __SysState);
+    void Update(SysState __sys_state);
 };

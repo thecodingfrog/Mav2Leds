@@ -1,4 +1,5 @@
 #include <GCS_MAVLink.h>
+#include "SysState.h"
 #include "MAVLinkReader.h"
 
 #define MOTORS_ARMED 128
@@ -172,6 +173,7 @@ SysState MAVLinkReader::Read()
               __isArmed = 0;
               __isArmedOld = 0;
             }
+            __obj.is_armed = __isArmed;
             __obj.system_state = __sys_state;
 
 #ifdef SERDB            

@@ -52,6 +52,7 @@
   #include "wiring.h"
 #endif
 #include "Mav2Leds.h"
+#include "SysState.h"
 #include <FastLED.h>
 #include "Strobe.h"
 #include "Strip.h"
@@ -66,7 +67,7 @@ int messageCounter;
 bool mavlink_active;
 BetterStream *mavlink_comm_0_port;
 
-SysState __SysState = { 0, "", 0, 0, -1, 0 };
+SysState __SysState;
 Position __position = { 0, 1 };
 MAVLinkReader __MAVLinkReader;
 
