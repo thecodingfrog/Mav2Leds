@@ -22,10 +22,10 @@ class MAVLinkReader
     
     uint8_t  __gps_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
     
-    uint16_t throttle = 0;                  // throttle value
-    uint8_t severity = 0;
-    char* severity_text;
-    boolean checks_ok = 1;
+    uint16_t __throttle = 0;                  // throttle value
+    uint8_t __severity = 0;
+    //char* __severity_text;
+    //boolean __checks_ok = 1;
     
     
     uint8_t mavlinkHB_char = 0;             // MavLink HeartBeat character

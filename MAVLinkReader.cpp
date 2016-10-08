@@ -238,16 +238,17 @@ SysState MAVLinkReader::Read()
  */
         case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
         {
-           throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
+           __throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
         }
         break;
         
         case MAVLINK_MSG_ID_STATUSTEXT:
           {
             //colorBlink(CRGB::Red, -1, -1, 50, 3, CRGB::Red, preserved_leds.none);
-            //severity = mavlink_msg_statustext_get_severity(&msg);
+            __severity = mavlink_msg_statustext_get_severity(&msg);
             //mavlink_msg_statustext_get_text(&msg, severity_text);
             //checks_ok = (String(severity_text).indexOf("PreArm:") >= 0) ? 0:1;
+            __obj.severity = __severity;
            #ifdef SERDB
              DPL(mavlink_msg_statustext_get_severity(&msg));
            #endif

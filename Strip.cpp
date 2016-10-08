@@ -98,7 +98,7 @@ void Strip::ParseMode()
       __leds_mode = __led_mode.blink;
       __leds_color = (__odd) ? CRGB::Blue : CRGB::Red;
     }
-    else if (__obj.system_state > 4) // MAV_STATE_CRITICAL and over  
+    else if (__obj.system_state > 4 || __obj.severity < 4) // MAV_STATE_CRITICAL and over  
     {
       __leds_mode = __led_mode.blink;
       __leds_color = CRGB::Yellow;
@@ -241,6 +241,8 @@ void Strip::Step1()
       {
         __leds1[__cycle12 - idx] = __leds_color;
         __leds1[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
+        __leds2[__cycle12 - idx] = __leds_color;
+        __leds2[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
       }
     }
   }
@@ -253,6 +255,8 @@ void Strip::Step1()
       {
         __leds1[__inv_cycle12 + idx] = __leds_color;
         __leds1[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
+        __leds2[__inv_cycle12 + idx] = __leds_color;
+        __leds2[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
       }
     }
   }
@@ -277,6 +281,8 @@ void Strip::Step1()
       {
         __leds1[__cycle12 - idx] = __leds_color;
         __leds1[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
+        __leds2[__cycle12 - idx] = __leds_color;
+        __leds2[__cycle12 - idx].fadeToBlackBy(255/5 * idx);
       }
     }
   }
@@ -289,6 +295,8 @@ void Strip::Step1()
       {
         __leds1[__inv_cycle12 + idx] = __leds_color;
         __leds1[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
+        __leds2[__inv_cycle12 + idx] = __leds_color;
+        __leds2[__inv_cycle12 + idx].fadeToBlackBy(255/5 * idx);
       }
     }
   }

@@ -9,4 +9,5 @@ class SysState
     byte is_armed;
     uint8_t system_state;
     int num_cells;
+    uint8_t severity;
 };
