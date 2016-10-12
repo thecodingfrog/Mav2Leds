@@ -174,6 +174,7 @@ SysState MAVLinkReader::Read()
               __isArmedOld = 0;
             }
             __obj.is_armed = __isArmed;
+            __obj.severity = (__isArmed) ? 6 : __severity;
             __obj.system_state = __sys_state;
 
 #ifdef SERDB            
