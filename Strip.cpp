@@ -111,7 +111,7 @@ void Strip::ParseMode()
         {
           __leds_mode = __led_mode.pulse;
           __leds_color = CRGB::Green;
-        }        
+        }
         else
         {
           __leds_mode = __led_mode.pulse;
@@ -123,11 +123,11 @@ void Strip::ParseMode()
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.chase;
         if (__obj.gps_fix_type == 3) // 3D Fix
         {
-          __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Green;
         }
         else
         { 
-          __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Blue;
         }    
       }
       else if (__obj.flight_mode_str == "alth") // armed & alt hold without GPS: front 3 led on, (white) front 1st led and rear leds flashing (orange)
@@ -135,11 +135,11 @@ void Strip::ParseMode()
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.pulse;
         if (__obj.gps_fix_type == 3) // 3D Fix
         {
-          __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Green;
         }
         else 
         {
-          __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Blue;
         }
       }
       else if (__obj.flight_mode_str == "phld") // armed & position hold: front leds on, (white) rear leds short flashing (green)
@@ -147,17 +147,17 @@ void Strip::ParseMode()
         __leds_mode = __led_mode.pulse;
         if (__obj.gps_fix_type == 3) // 3D Fix
         {
-          __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Green;
         }
         else
         {
-          __leds_color = (__pos == __position.front) ? CRGB::Blue : CRGB::Red;
+          __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Blue;
         }
       }
       else if (__obj.flight_mode_str == "loit") // LOITER
       {
         __leds_mode = (__pos == __position.front) ? __led_mode.chaseback : __led_mode.on;
-        __leds_color = (__pos == __position.front) ? CRGB::Green : CRGB::Red;
+        __leds_color = (__pos == __position.front) ? CRGB::Red : CRGB::Green;
       }
       else if (__obj.flight_mode_str == "land") // LAND
       {

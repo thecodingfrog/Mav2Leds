@@ -283,7 +283,7 @@ void MAVLinkReader::CheckFlightMode()
     else if (__flight_mode == 5) __mode_str = "loit"; //Loiter
     else if (__flight_mode == 6) __mode_str = "rtl"; //Return to Launch
     else if (__flight_mode == 7) __mode_str = "circ"; //Circle
-    //else if (__flight_mode == 8) __mode_str = "posi"; //Position Hold (Old)
+    else if (__flight_mode == 8) __mode_str = "phld"; //posi //Position Hold (Old)
     else if (__flight_mode == 9) __mode_str = "land"; //Land
     else if (__flight_mode == 10) __mode_str = "oflo"; //OF_Loiter
     else if (__flight_mode == 11) __mode_str = "drif"; //Drift

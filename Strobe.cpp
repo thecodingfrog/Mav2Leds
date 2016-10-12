@@ -79,10 +79,10 @@ void Strobe::Update()
 
 void Strobe::Show()
 {
-  __FR_leds[__led_idx] = CRGB::Green;
-  __FL_leds[__led_idx] = CRGB::Green;
-  __RR_leds[__led_idx] = CRGB::Red;
-  __RL_leds[__led_idx] = CRGB::Red;
+  __FR_leds[__led_idx] = CRGB::Red;
+  __FL_leds[__led_idx] = CRGB::Red;
+  __RR_leds[__led_idx] = CRGB::Green;
+  __RL_leds[__led_idx] = CRGB::Green;
   FastLED.show();
 }
 
