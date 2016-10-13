@@ -175,6 +175,7 @@ SysState MAVLinkReader::Read()
             }
             __obj.is_armed = __isArmed;
             __obj.severity = (__isArmed) ? 6 : __severity;
+            __obj.has_error = (__isArmed) ? false : __has_error;
             __obj.system_state = __sys_state;
 
 #ifdef SERDB            
@@ -247,9 +248,32 @@ SysState MAVLinkReader::Read()
           {
             //colorBlink(CRGB::Red, -1, -1, 50, 3, CRGB::Red, preserved_leds.none);
             __severity = mavlink_msg_statustext_get_severity(&msg);
-            //mavlink_msg_statustext_get_text(&msg, severity_text);
-            //checks_ok = (String(severity_text).indexOf("PreArm:") >= 0) ? 0:1;
+            uint16_t __s_text = mavlink_msg_statustext_get_text(&msg, __severity_text);
+
+            String __str = (String)__severity_text;
+            __str.toLowerCase();
+            if (__str.indexOf("prearm") > -1)
+            {
+              __has_error = true;
+            }
+            else if (__str.indexOf("locate") > -1)
+            {
+              __has_error = false;
+            }
+            else if (__str.indexOf("initialising") > -1)
+            {
+              __has_error = false;
+            }
+            else if (__severity > 3)
+            {
+              __has_error = false;
+            }
+            else
+            {
+              __has_error = true;
+            }
             __obj.severity = __severity;
+            __obj.has_error = __has_error;
            #ifdef SERDB
              DPL(mavlink_msg_statustext_get_severity(&msg));
            #endif

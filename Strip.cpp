@@ -98,7 +98,7 @@ void Strip::ParseMode()
       __leds_mode = __led_mode.blink;
       __leds_color = (__odd) ? CRGB::Blue : CRGB::Red;
     }
-    else if (__obj.system_state > 4 || __obj.severity < 4) // MAV_STATE_CRITICAL and over  
+    else if (__obj.system_state > 4 || __obj.has_error) // MAV_STATE_CRITICAL and over  
     {
       __leds_mode = __led_mode.blink;
       __leds_color = CRGB::Yellow;

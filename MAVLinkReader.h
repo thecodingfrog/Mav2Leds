@@ -24,8 +24,8 @@ class MAVLinkReader
     
     uint16_t __throttle = 0;                  // throttle value
     uint8_t __severity = 0;
-    //char* __severity_text;
-    //boolean __checks_ok = 1;
+    char* __severity_text;
+    boolean __has_error = true;
     
     
     uint8_t mavlinkHB_char = 0;             // MavLink HeartBeat character

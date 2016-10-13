@@ -11,5 +11,6 @@ SysState::SysState()
   system_state = 0;
   num_cells = 0;
   severity = 0;
+  has_error = 0;
 }
 
