@@ -23,8 +23,9 @@ class MAVLinkReader
     uint8_t  __gps_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
     
     uint16_t __throttle = 0;                  // throttle value
+    uint16_t __res = 0;
     uint8_t __severity = 0;
-    char* __severity_text;
+    byte __severity_text[52];
     boolean __has_error = true;
     
     

@@ -33,28 +33,20 @@ void MAVLinkReader::Update()
   if(currentMillis - previousMillis >= OnTime)
   {
     previousMillis = currentMillis;
-    #ifdef SERDB
-      DPL("MAVLinkReader::Update()");
-    #endif
 
     /* this event is called @ 10Hz */
     __ioCounter ++ ;     /* update counter to use in all blink loops */
     if (__ioCounter > 10) __ioCounter = 0;
 
     /* 10Hz calls */
-    /* do the LED stuff 
-     * RGB controller LEDstrip or directly attached LEDs */
-    HeartBeat();
-  
+    HeartBeat();  
     /* end 10Hz calls */
   
     /* 1Hz calls */
     if (__ioCounter == 1)
     {
-      /* 1Hz routines between this line */
-  
-      CheckBattery();
-  
+      /* 1Hz routines between this line */  
+      CheckBattery();  
       /* and this line */
     }
   }
@@ -72,20 +64,12 @@ void MAVLinkReader::HeartBeat()
   /* check if Mavlink is lost */
   if(__messageCounter >= 50 && __mavlink_active)
   {
-    #ifdef SERDB  
-      DPL("We lost MAVLink");
-    #endif
     __mavlink_active = 0;
     __messageCounter = 0;
     mavlink_request = 1;
   }
 
   if(__messageCounter > 500) __messageCounter = 0;  /* to prevent overflow */
-  #ifdef SERDB  
-    if(__messageCounter == 500){
-      DPL("(Still) no mavlink ??");
-    }
-  #endif
 }
 
 void MAVLinkReader::CheckBattery()
@@ -124,15 +108,17 @@ SysState MAVLinkReader::Read()
   }*/
   
   // grabing data 
-  while(Serial.available() > 0) { 
+  while(Serial.available() > 0)
+  { 
     uint8_t c = Serial.read();
 
     // trying to grab msg  
-    if(mavlink_parse_char(MAVLINK_COMM_0, c, &msg, &status)) {
+    if(mavlink_parse_char(MAVLINK_COMM_0, c, &msg, &status))
+    {
        __messageCounter = 0; 
        __mavlink_active = 1;
        switch(msg.msgid)           /* Handle msg */
-    {
+       {
 /**
 * @param type Type of the MAV (quadrotor, helicopter, etc., up to 15 types, defined in MAV_TYPE ENUM)
 * @param autopilot Autopilot type / class. defined in MAV_AUTOPILOT ENUM
@@ -140,11 +126,8 @@ SysState MAVLinkReader::Read()
 * @param custom_mode A bitfield for use for autopilot-specific flags.  - AutoQuad nav mode
 * @param system_status System status flag, see MAV_STATE ENUM
 */
-        case MAVLINK_MSG_ID_HEARTBEAT:
+          case MAVLINK_MSG_ID_HEARTBEAT:
           {
-            #ifdef SERDB
-              DPL("MAVlink HeartBeat");
-            #endif
             
             mavbeat = 1;
             apm_mav_system    = msg.sysid;
@@ -177,37 +160,6 @@ SysState MAVLinkReader::Read()
             __obj.severity = (__isArmed) ? 6 : __severity;
             __obj.has_error = (__isArmed) ? false : __has_error;
             __obj.system_state = __sys_state;
-
-#ifdef SERDB            
-              dbSerial.print("MAV: ");
-              dbSerial.print((mavlink_msg_heartbeat_get_base_mode(&msg),DEC));
-              dbSerial.println();
-              dbSerial.print("Mode: ");
-              dbSerial.print(__mode);
-              dbSerial.println();
-              dbSerial.print("flMode: ");
-              dbSerial.print(__flMode);
-              dbSerial.println();
-              dbSerial.print("Nav mode: ");
-              dbSerial.print(__nav_mode);
-              dbSerial.println();
-              dbSerial.print("Flight mode: ");
-              dbSerial.print(__mode_str);
-              dbSerial.println();
-              dbSerial.print("SysStat: ");
-              dbSerial.print(__sys_state);
-              dbSerial.println();
-              dbSerial.print("FIX: ");
-              dbSerial.print(__gps_fix_type);
-              dbSerial.println();
-              dbSerial.print("BatVolt: ");
-              dbSerial.print(__vbat_A/1E1);
-              dbSerial.println();
-              dbSerial.print("Armed: ");
-              dbSerial.print(__isArmed);
-                              
-              dbSerial.println();
-#endif 
           }
           break;
           
@@ -229,7 +181,7 @@ SysState MAVLinkReader::Read()
  * @param cog Course over ground (NOT heading, but direction of movement) in degrees * 100, 0.0..359.99 degrees. If unknown, set to: 65535
  * @param satellites_visible Number of satellites visible. If unknown, set to 255
  */
-        case MAVLINK_MSG_ID_GPS_RAW_INT:    // is send by AutoQad
+          case MAVLINK_MSG_ID_GPS_RAW_INT:    // is send by AutoQad
           {      
             __gps_fix_type = mavlink_msg_gps_raw_int_get_fix_type(&msg);
             __obj.gps_fix_type = __gps_fix_type;
@@ -238,19 +190,18 @@ SysState MAVLinkReader::Read()
 /**
  * @return RC channel 1 value, in microseconds
  */
-        case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
-        {
-           __throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
-        }
-        break;
-        
-        case MAVLINK_MSG_ID_STATUSTEXT:
+          case MAVLINK_MSG_ID_RC_CHANNELS_RAW:
           {
-            //colorBlink(CRGB::Red, -1, -1, 50, 3, CRGB::Red, preserved_leds.none);
+             __throttle = mavlink_msg_rc_channels_raw_get_chan1_raw(&msg);
+          }
+          break;
+        
+          case MAVLINK_MSG_ID_STATUSTEXT:
+          {
             __severity = mavlink_msg_statustext_get_severity(&msg);
-            uint16_t __s_text = mavlink_msg_statustext_get_text(&msg, __severity_text);
+            __res = mavlink_msg_statustext_get_text(&msg, (char *)__severity_text);
 
-            String __str = (String)__severity_text;
+            String __str = (char *)__severity_text;
             __str.toLowerCase();
             if (__str.indexOf("prearm") > -1)
             {
@@ -274,9 +225,6 @@ SysState MAVLinkReader::Read()
             }
             __obj.severity = __severity;
             __obj.has_error = __has_error;
-           #ifdef SERDB
-             DPL(mavlink_msg_statustext_get_severity(&msg));
-           #endif
           }
           break;
 // * * * end messages * * *       
@@ -285,8 +233,6 @@ SysState MAVLinkReader::Read()
        break;
       }
     }
-    //delayMicroseconds(138); //TODO
-    //next one
   }
   // Update global packet drops counter
   packet_drops += status.packet_rx_drop_count;
@@ -297,47 +243,46 @@ SysState MAVLinkReader::Read()
 
 void MAVLinkReader::CheckFlightMode()
 {
-  //if (displayVersionDone)
-  //{
-    if (__flight_mode == 0) __mode_str = "stab"; //Stabilize
-    else if (__flight_mode == 1) __mode_str = "acro"; //Acrobatic
-    else if (__flight_mode == 2) __mode_str = "alth"; //Alt Hold
-    else if (__flight_mode == 3) __mode_str = "auto"; //Auto
-    else if (__flight_mode == 4) __mode_str = "guid"; //Guided
-    else if (__flight_mode == 5) __mode_str = "loit"; //Loiter
-    else if (__flight_mode == 6) __mode_str = "rtl"; //Return to Launch
-    else if (__flight_mode == 7) __mode_str = "circ"; //Circle
-    else if (__flight_mode == 8) __mode_str = "phld"; //posi //Position Hold (Old)
-    else if (__flight_mode == 9) __mode_str = "land"; //Land
-    else if (__flight_mode == 10) __mode_str = "oflo"; //OF_Loiter
-    else if (__flight_mode == 11) __mode_str = "drif"; //Drift
-    else if (__flight_mode == 13) __mode_str = "sprt"; //Sport
-    else if (__flight_mode == 14) __mode_str = "flip"; //Flip
-    else if (__flight_mode == 15) __mode_str = "tune"; //Tune
-    else if (__flight_mode == 16) __mode_str = "phld"; //Position Hold (Earlier called Hybrid)
-    
-    if(__mode == 0)          __flMode = 0;    // d__isArmed - no data
-    if(__mode == DISARMED)   __flMode = 1;    // d__isArmed
-    if(__mode == ARMED)      __flMode = 2;    // Manual + stab
-    if(__mode == ALT_HOLD)   __flMode = 3;    // Alt Hold
-    if(__mode == POS_HOLD)   __flMode = 4;    // Position Hold
-    if(__mode == DVH_MODE)   __flMode = 6;    // Stabilized DVH mode
-    if(__mode == CARE_FREE)  __flMode = 7;    // CareFree mode
-    if(__sys_state == MAV_STATE_CRITICAL) __flMode = 11;   // Signal lost
-    if((__mode == MISION_MODE) && ((__nav_mode == WAYPOINT) || (__nav_mode == TAKEOFF))) __flMode = 5;    // Mission mode, waypoint or takeoff
-    if((__mode == MISION_MODE) && (__nav_mode == RTH))   __flMode = 8;    // Return to Home
-    if((__mode == MISION_MODE) && (__nav_mode == ORBIT)) __flMode = 9;    // Circle orbit
-    if((__mode == MISION_MODE) && (__nav_mode == LAND))  __flMode = 10;   // Land
+  if (__flight_mode == 0) __mode_str = "stab"; //Stabilize
+  else if (__flight_mode == 1) __mode_str = "acro"; //Acrobatic
+  else if (__flight_mode == 2) __mode_str = "alth"; //Alt Hold
+  else if (__flight_mode == 3) __mode_str = "auto"; //Auto
+  else if (__flight_mode == 4) __mode_str = "guid"; //Guided
+  else if (__flight_mode == 5) __mode_str = "loit"; //Loiter
+  else if (__flight_mode == 6) __mode_str = "rtl"; //Return to Launch
+  else if (__flight_mode == 7) __mode_str = "circ"; //Circle
+  else if (__flight_mode == 8) __mode_str = "phld"; //posi //Position Hold (Old)
+  else if (__flight_mode == 9) __mode_str = "land"; //Land
+  else if (__flight_mode == 10) __mode_str = "oflo"; //OF_Loiter
+  else if (__flight_mode == 11) __mode_str = "drif"; //Drift
+  else if (__flight_mode == 13) __mode_str = "sprt"; //Sport
+  else if (__flight_mode == 14) __mode_str = "flip"; //Flip
+  else if (__flight_mode == 15) __mode_str = "tune"; //Tune
+  else if (__flight_mode == 16) __mode_str = "phld"; //Position Hold (Earlier called Hybrid)
+  
+  if(__mode == 0)          __flMode = 0;    // d__isArmed - no data
+  if(__mode == DISARMED)   __flMode = 1;    // d__isArmed
+  if(__mode == ARMED)      __flMode = 2;    // Manual + stab
+  if(__mode == ALT_HOLD)   __flMode = 3;    // Alt Hold
+  if(__mode == POS_HOLD)   __flMode = 4;    // Position Hold
+  if(__mode == DVH_MODE)   __flMode = 6;    // Stabilized DVH mode
+  if(__mode == CARE_FREE)  __flMode = 7;    // CareFree mode
+  if(__sys_state == MAV_STATE_CRITICAL) __flMode = 11;   // Signal lost
+  if((__mode == MISION_MODE) && ((__nav_mode == WAYPOINT) || (__nav_mode == TAKEOFF))) __flMode = 5;    // Mission mode, waypoint or takeoff
+  if((__mode == MISION_MODE) && (__nav_mode == RTH))   __flMode = 8;    // Return to Home
+  if((__mode == MISION_MODE) && (__nav_mode == ORBIT)) __flMode = 9;    // Circle orbit
+  if((__mode == MISION_MODE) && (__nav_mode == LAND))  __flMode = 10;   // Land
 
-    __obj.flight_mode = __flight_mode;
-    __obj.flight_mode_str = __mode_str;
-  //}
+  __obj.flight_mode = __flight_mode;
+  __obj.flight_mode_str = __mode_str;
 }
 
 // Checking if BIT is active in PARAM, return true if it is, false if not
 byte MAVLinkReader::isBit(byte param, byte bitfield)
 {
-  if((param & bitfield) == bitfield) return 1;
-  else return 0;  
+  if((param & bitfield) == bitfield)
+    return 1;
+  else
+    return 0;  
 }
 

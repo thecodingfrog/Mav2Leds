@@ -91,7 +91,7 @@ void Strip::ParseMode()
     if (__obj.system_state < 2) // MAV_STATE_BOOT
     {
       __leds_mode = __led_mode.blink;
-      __leds_color = CRGB::Yellow;
+      __leds_color = CRGB::White;
     }
     else if (__obj.system_state == 2) // MAV_STATE_CALIBRATING
     {
