@@ -138,6 +138,7 @@ SysState MAVLinkReader::Read()
             __nav_mode = mavlink_msg_heartbeat_get_custom_mode(&msg);
             __flight_mode = (uint8_t)mavlink_msg_heartbeat_get_custom_mode(&msg);
             __sys_state = mavlink_msg_heartbeat_get_system_status(&msg);
+            __prearm_state = mavlink_msg_heartbeat_get_prearm_status(&msg);
             
             CheckFlightMode();
             //if (__mode == D__isArmed) __isArmed=0;
@@ -160,6 +161,7 @@ SysState MAVLinkReader::Read()
             __obj.severity = (__isArmed) ? 6 : __severity;
             __obj.has_error = (__isArmed) ? false : __has_error;
             __obj.system_state = __sys_state;
+            __obj.pream_state = __prearm_state;
           }
           break;
           

@@ -19,6 +19,7 @@ class MAVLinkReader
     uint8_t  __nav_mode = 0;               // Navigation mode
     uint8_t  __flight_mode = 0;
     uint8_t  __sys_state = 0;                // system status (active,standby,critical)
+    uint8_t  __prearm_state = 0;
     
     uint8_t  __gps_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
     
