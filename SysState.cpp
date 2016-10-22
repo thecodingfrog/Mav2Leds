@@ -12,5 +12,7 @@ SysState::SysState()
   num_cells = 0;
   severity = 0;
   has_error = 0;
+  prearm_state = 0;
+  prearm_rc_state = 0;
 }
 

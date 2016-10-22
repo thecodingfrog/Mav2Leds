@@ -11,4 +11,6 @@ class SysState
     int num_cells;
     uint8_t severity;
     bool has_error;
+    uint8_t prearm_state;
+    uint8_t prearm_rc_state;
 };

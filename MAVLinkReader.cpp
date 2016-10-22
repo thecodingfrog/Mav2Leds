@@ -160,6 +160,9 @@ SysState MAVLinkReader::Read()
             __obj.severity = (__isArmed) ? 6 : __severity;
             __obj.has_error = (__isArmed) ? false : __has_error;
             __obj.system_state = __sys_state;
+
+            //__prearm_state = mavlink_msg_heartbeat_get_prearm_status(&msg);                 
+            //__obj.pream_state = __prearm_state;
           }
           break;
           
@@ -185,6 +188,15 @@ SysState MAVLinkReader::Read()
           {      
             __gps_fix_type = mavlink_msg_gps_raw_int_get_fix_type(&msg);
             __obj.gps_fix_type = __gps_fix_type;
+          }
+          break;
+          
+          case MAVLINK_MSG_ID_PREARM_STATUS:
+          {
+            __prearm_state = mavlink_msg_prearm_status_get_prearm_status(&msg);            
+            //__prearm_rc_state = mavlink_msg_prearm_status_get_prearm_rc_status(&msg);            
+            __obj.prearm_state = 1;
+            //__obj.prearm_rc_state = __prearm_rc_state;
           }
           break;
 /**
