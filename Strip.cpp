@@ -88,17 +88,7 @@ void Strip::ParseMode()
   }
   else
   {
-    if (__obj.prearm_state == 0) // MAV_STATE_BOOT
-    {
-      __leds_mode = __led_mode.blink;
-      __leds_color = CRGB::Yellow;
-    }
-    else if (__obj.prearm_state == 1) // MAV_STATE_BOOT
-    {
-      __leds_mode = __led_mode.blink;
-      __leds_color = CRGB::Cyan;
-    }
-    else if (__obj.system_state < 2) // MAV_STATE_BOOT
+    if (__obj.system_state < 2) // MAV_STATE_BOOT
     {
       __leds_mode = __led_mode.blink;
       __leds_color = CRGB::White;

@@ -18,38 +18,14 @@ class MAVLinkReader
     uint16_t __mode = 0;                   // Status mode (manual,stabilized etc)
     uint8_t  __nav_mode = 0;               // Navigation mode
     uint8_t  __flight_mode = 0;
-    uint8_t  __sys_state = 0;                // system status (active,standby,critical)
-    uint8_t  __prearm_state = 0;
-    uint8_t  __prearm_rc_state = 0;
-    
-    uint8_t  __gps_fix_type = 0;               // GPS lock 0-1=no fix, 2=2D, 3=3D
-    
-    uint16_t __throttle = 0;                  // throttle value
-    uint16_t __res = 0;
-    uint8_t __severity = 0;
-    byte __severity_text[52];
-    boolean __has_error = true;
-    
-    
-    uint8_t mavlinkHB_char = 0;             // MavLink HeartBeat character
-    
-    /* MAVLink session control */
-    boolean  mavbeat = 0;
-    uint8_t  apm_mav_type;
-    uint8_t  apm_mav_system; 
-    uint8_t  apm_mav_component;
-    boolean  mavlink_request = 0;
+    uint8_t  __sys_state = 0;                // system status (active,standby,critical)  
     
     /* General states */
     byte __flMode;                                  /* Our current flight mode as defined */
-    byte __isArmed = 0;
-    byte __isArmedOld = 0;
-    byte __isActive;
     
     String __mode_str;
     int packet_drops = 0;
     int parse_error = 0;
-
     
     void HeartBeat();
     void CheckBattery();
